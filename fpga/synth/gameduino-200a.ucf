@@ -3,10 +3,8 @@
 # xc3s200a-4vq100
 #
 #####################################################
-#
-# Clocks
-#
-net CLKA          loc=P89  | IOSTANDARD = LVCMOS33 ; # 50MHz
+
+net CLKA            loc=P89      | IOSTANDARD = LVCMOS33 ; # 50MHz
 
 net VGA_VSYNC_N     loc=P57     | IOSTANDARD = LVCMOS33 ;        
 net VGA_HSYNC_N     loc=P56     | IOSTANDARD = LVCMOS33 ;        
@@ -56,10 +54,10 @@ net debug<6>    loc=P29     | IOSTANDARD = LVCMOS33 ;
 net debug<7>    loc=P28     | IOSTANDARD = LVCMOS33 ;
 
 
-
 #
 # Timing Constraints
 #
+
 NET "CLKA" TNM_NET="CLKA"; 
 TIMESPEC "TS_clk"=PERIOD "CLKA" 40 ns HIGH 50 %; 
 # NET "SCK" TNM_NET="SCK"; 
