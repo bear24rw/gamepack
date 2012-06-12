@@ -812,27 +812,48 @@ endmodule
 
 module top(
   input clka,
+
   output [2:0] vga_red,
   output [2:0] vga_green,
   output [2:0] vga_blue,
   output vga_hsync_n,
   output vga_vsync_n,
 
-  input SCK,  // arduino 13
-  input MOSI, // arduino 11
-  inout MISO, // arduino 12
-  input SSEL, // arduino 9
-  inout AUX,  // arduino 2
+  output NES_CLK,
+  output NES_LATCH,
+  input NES_DATA_1,
+  input NES_DATA_2,
+
+  output LED_1,
+  output LED_2,
+
+  inout GPIO_1,
+  inout GPIO_2,
+  inout GPIO_3,
+  inout GPIO_4,
+
+  input SCK,  
+  input MOSI, 
+  inout MISO, 
+  input SSEL, 
+
   output AUDIOL,
   output AUDIOR,
 
   output flashMOSI,
   input  flashMISO,
   output flashSCK,
-  output flashSSEL
+  output flashSSEL,
+
+  output [7:0] debug
 
   );
 
+  assign NES_CLK = 0;
+  assign NES_LATCH = 0;
+  assign LED_1 = 1;
+  assign LED_2 = 1;
+  assign debug = 8'h00;
 
   wire mem_clk;
   wire [7:0] host_mem_data_wr;
@@ -894,7 +915,7 @@ module top(
   wire pin2f = (pin2mode == 8'h46);
   wire pin2j = (pin2mode == 8'h4A);
 
-  wire flashsel = (AUX == 0) & pin2f;
+  wire flashsel = (GPIO_1 == 0) & pin2f;
 
   assign MISO = SSEL ? (flashsel ? flashMISO : 1'bz) : gdMISO;
   // assign MISO = SSEL ? (1'bz ) : gdMISO;
@@ -1773,7 +1794,7 @@ ROM64X1 #(.INIT(64'b000000000001111111111111111111111111111111111111111111000000
     5'h00: local_j1_read <= YYLINE;
     5'h02: local_j1_read <= icap_o;
     5'h0c: local_j1_read <= freqtick;
-    5'h0e: local_j1_read <= AUX;
+    5'h0e: local_j1_read <= GPIO_1;
     5'h12: local_j1_read <= lfsr;
     5'h14: local_j1_read <= soundcounter;
     5'h16: local_j1_read <= flashMISO;
@@ -1836,8 +1857,8 @@ ROM64X1 #(.INIT(64'b000000000001111111111111111111111111111111111111111111000000
 
   assign flashMOSI = pin2j ? j1_flashMOSI : MOSI;
   assign flashSCK = pin2j ? j1_flashSCK : SCK;
-  assign flashSSEL = pin2f ? AUX : (pin2j ? j1_flashSSEL : 1);
+  assign flashSSEL = pin2f ? GPIO_1 : (pin2j ? j1_flashSSEL : 1);
 
-  assign AUX = (pin2j & (j1_p2_dir == 0)) ? j1_p2_o : 1'bz;
+  assign GPIO_1 = (pin2j & (j1_p2_dir == 0)) ? j1_p2_o : 1'bz;
 
 endmodule // top

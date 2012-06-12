@@ -6,33 +6,57 @@
 #
 # Clocks
 #
-net CLKA          loc=P83  | IOSTANDARD = LVCMOS33 ; # 50MHz
-net SCK           loc=P84  | IOSTANDARD = LVCMOS33 ;
+net CLKA          loc=P89  | IOSTANDARD = LVCMOS33 ; # 50MHz
 
-NET VGA_VSYNC_N   LOC=P3   | IOSTANDARD = LVCMOS33 ;        
-NET VGA_HSYNC_N   LOC=P4   | IOSTANDARD = LVCMOS33 ;        
-NET VGA_BLUE<0>   LOC=P5   | IOSTANDARD = LVCMOS33 ;        
-NET VGA_BLUE<1>   LOC=P6   | IOSTANDARD = LVCMOS33 ;        
-NET VGA_BLUE<2>   LOC=P9   | IOSTANDARD = LVCMOS33 ;        
-NET VGA_GREEN<0>  LOC=P10  | IOSTANDARD = LVCMOS33 ;        
-NET VGA_GREEN<1>  LOC=P12  | IOSTANDARD = LVCMOS33 ;        
-NET VGA_GREEN<2>  LOC=P13  | IOSTANDARD = LVCMOS33 ;        
-NET VGA_RED<0>    LOC=P19  | IOSTANDARD = LVCMOS33 ;        
-NET VGA_RED<1>    LOC=P16  | IOSTANDARD = LVCMOS33 ;        
-NET VGA_RED<2>    LOC=P15  | IOSTANDARD = LVCMOS33 ;        
+net VGA_VSYNC_N     loc=P57     | IOSTANDARD = LVCMOS33 ;        
+net VGA_HSYNC_N     loc=P56     | IOSTANDARD = LVCMOS33 ;        
+net VGA_BLUE<0>     loc=P61     | IOSTANDARD = LVCMOS33 ;        
+net VGA_BLUE<1>     loc=P60     | IOSTANDARD = LVCMOS33 ;        
+net VGA_BLUE<2>     loc=P59     | IOSTANDARD = LVCMOS33 ;        
+net VGA_GREEN<0>    loc=P65     | IOSTANDARD = LVCMOS33 ;        
+net VGA_GREEN<1>    loc=P64     | IOSTANDARD = LVCMOS33 ;        
+net VGA_GREEN<2>    loc=P62     | IOSTANDARD = LVCMOS33 ;        
+net VGA_RED<0>      loc=P72     | IOSTANDARD = LVCMOS33 ;        
+net VGA_RED<1>      loc=P71     | IOSTANDARD = LVCMOS33 ;        
+net VGA_RED<2>      loc=P70     | IOSTANDARD = LVCMOS33 ;        
 
-net AUX           loc=P78  | IOSTANDARD = LVCMOS33 ;
-net MOSI          loc=P85  | IOSTANDARD = LVCMOS33 ;
-net MISO          loc=P86  | IOSTANDARD = LVCMOS33 ;
-net SSEL          loc=P88  | IOSTANDARD = LVCMOS33 ;
+net NES_CLK     loc=P6      | IOSTANDARD = LVCMOS33 ;
+net NES_LATCH   loc=P5      | IOSTANDARD = LVCMOS33 ;
+net NES_DATA_1  loc=P4      | IOSTANDARD = LVCMOS33 ;
+net NES_DATA_2  loc=P3      | IOSTANDARD = LVCMOS33 ;
 
-net AUDIOR    loc=P98  | IOSTANDARD = LVCMOS33 ;
-net AUDIOL    loc=P99  | IOSTANDARD = LVCMOS33 ;
+net LED_1       loc=P78     | IOSTANDARD = LVCMOS33 ;
+net LED_2       loc=P77     | IOSTANDARD = LVCMOS33 ;
 
-net flashMOSI  loc=P46  | IOSTANDARD = LVCMOS33 ;
-net flashMISO  loc=P51  | IOSTANDARD = LVCMOS33 ;
-net flashSCK   loc=P53  | IOSTANDARD = LVCMOS33 ;
-net flashSSEL  loc=P27  | IOSTANDARD = LVCMOS33 ;
+net GPIO_1      loc=P73     | IOSTANDARD = LVCMOS33 ;
+net GPIO_2      loc=P68     | IOSTANDARD = LVCMOS33 ;
+net GPIO_3      loc=P41     | IOSTANDARD = LVCMOS33 ;
+net GPIO_4      loc=P43     | IOSTANDARD = LVCMOS33 ;
+
+net SCK         loc=P44     | IOSTANDARD = LVCMOS33 ;
+net MOSI        loc=P85     | IOSTANDARD = LVCMOS33 ;
+net MISO        loc=P84     | IOSTANDARD = LVCMOS33 ;
+net SSEL        loc=P48     | IOSTANDARD = LVCMOS33 ;
+
+net AUDIOR      loc=P49     | IOSTANDARD = LVCMOS33 ;
+net AUDIOL      loc=P50     | IOSTANDARD = LVCMOS33 ;
+
+net flashMOSI   loc=P46     | IOSTANDARD = LVCMOS33 ;
+net flashMISO   loc=P51     | IOSTANDARD = LVCMOS33 ;
+net flashSCK    loc=P53     | IOSTANDARD = LVCMOS33 ;
+net flashSSEL   loc=P27     | IOSTANDARD = LVCMOS33 ;
+
+net debug<0>    loc=P35     | IOSTANDARD = LVCMOS33 ;
+net debug<1>    loc=P34     | IOSTANDARD = LVCMOS33 ;
+net debug<2>    loc=P33     | IOSTANDARD = LVCMOS33 ;
+net debug<3>    loc=P32     | IOSTANDARD = LVCMOS33 ;
+net debug<4>    loc=P31     | IOSTANDARD = LVCMOS33 ;
+net debug<5>    loc=P30     | IOSTANDARD = LVCMOS33 ;
+net debug<6>    loc=P29     | IOSTANDARD = LVCMOS33 ;
+net debug<7>    loc=P28     | IOSTANDARD = LVCMOS33 ;
+
+
+
 #
 # Timing Constraints
 #
