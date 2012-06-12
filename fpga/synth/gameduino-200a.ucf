@@ -1,0 +1,53 @@
+#####################################################
+#
+# xc3s200a-4vq100
+#
+#####################################################
+#
+# Clocks
+#
+net CLKA          loc=P83  | IOSTANDARD = LVCMOS33 ; # 50MHz
+net SCK           loc=P84  | IOSTANDARD = LVCMOS33 ;
+
+NET VGA_VSYNC_N   LOC=P3   | IOSTANDARD = LVCMOS33 ;        
+NET VGA_HSYNC_N   LOC=P4   | IOSTANDARD = LVCMOS33 ;        
+NET VGA_BLUE<0>   LOC=P5   | IOSTANDARD = LVCMOS33 ;        
+NET VGA_BLUE<1>   LOC=P6   | IOSTANDARD = LVCMOS33 ;        
+NET VGA_BLUE<2>   LOC=P9   | IOSTANDARD = LVCMOS33 ;        
+NET VGA_GREEN<0>  LOC=P10  | IOSTANDARD = LVCMOS33 ;        
+NET VGA_GREEN<1>  LOC=P12  | IOSTANDARD = LVCMOS33 ;        
+NET VGA_GREEN<2>  LOC=P13  | IOSTANDARD = LVCMOS33 ;        
+NET VGA_RED<0>    LOC=P19  | IOSTANDARD = LVCMOS33 ;        
+NET VGA_RED<1>    LOC=P16  | IOSTANDARD = LVCMOS33 ;        
+NET VGA_RED<2>    LOC=P15  | IOSTANDARD = LVCMOS33 ;        
+
+net AUX           loc=P78  | IOSTANDARD = LVCMOS33 ;
+net MOSI          loc=P85  | IOSTANDARD = LVCMOS33 ;
+net MISO          loc=P86  | IOSTANDARD = LVCMOS33 ;
+net SSEL          loc=P88  | IOSTANDARD = LVCMOS33 ;
+
+net AUDIOR    loc=P98  | IOSTANDARD = LVCMOS33 ;
+net AUDIOL    loc=P99  | IOSTANDARD = LVCMOS33 ;
+
+net flashMOSI  loc=P46  | IOSTANDARD = LVCMOS33 ;
+net flashMISO  loc=P51  | IOSTANDARD = LVCMOS33 ;
+net flashSCK   loc=P53  | IOSTANDARD = LVCMOS33 ;
+net flashSSEL  loc=P27  | IOSTANDARD = LVCMOS33 ;
+#
+# Timing Constraints
+#
+NET "CLKA" TNM_NET="CLKA"; 
+TIMESPEC "TS_clk"=PERIOD "CLKA" 40 ns HIGH 50 %; 
+# NET "SCK" TNM_NET="SCK"; 
+# TIMESPEC "TS_SCK"=PERIOD "SCK" 50 ns HIGH 50 %; 
+
+# NET "SCK" CLOCK_DEDICATED_ROUTE = FALSE;
+# NET "slot2_irq" CLOCK_DEDICATED_ROUTE = FALSE;
+
+# 
+
+# INST "vga_ck_gen/DCM_inst/DCM_SP" LOC = "DCM_X1Y1";
+# INST "vga_clk_BUFG" LOC = "BUFGMUX_X2Y11";
+
+# NET "SCK" CLOCK_DEDICATED_ROUTE = FALSE;
+# NET "SSEL" CLOCK_DEDICATED_ROUTE = FALSE;

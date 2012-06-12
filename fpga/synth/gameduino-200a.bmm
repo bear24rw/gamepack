@@ -1,0 +1,31 @@
+// ADDRESS_SPACE picture RAMB16 [0x00020000:0x00020fff]
+//     BUS_BLOCK
+//          picture/ramx[1].ramx [7:4]; 
+//          picture/ramx[0].ramx [3:0]; 
+//     END_BUS_BLOCK; 
+// END_ADDRESS_SPACE; 
+// ADDRESS_SPACE chars RAMB16 [0x00021000:0x00021fff]
+//     BUS_BLOCK
+//          chars/ramx[1].ramx [7:4]; 
+//          chars/ramx[0].ramx [3:0]; 
+//     END_BUS_BLOCK; 
+// END_ADDRESS_SPACE; 
+// ADDRESS_SPACE gameduino COMBINED [0x00000000:0x000027ff]
+//   ADDRESS_RANGE RAMB16
+//     BUS_BLOCK
+//       picture/ramx[1].ramx [7:4]; 
+//       picture/ramx[0].ramx [3:0]; 
+//     END_BUS_BLOCK;
+//   END_ADDRESS_RANGE;
+//   ADDRESS_RANGE RAMB16
+//     BUS_BLOCK
+//       chars/ramx[1].ramx [7:4]; 
+//       chars/ramx[0].ramx [3:0]; 
+//     END_BUS_BLOCK;
+//   END_ADDRESS_RANGE;
+//   ADDRESS_RANGE RAMB16
+//     BUS_BLOCK
+//       charpalette [15:0]; 
+//     END_BUS_BLOCK;
+//   END_ADDRESS_RANGE;
+// END_ADDRESS_SPACE;
