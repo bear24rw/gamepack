@@ -1,0 +1,53 @@
+// headers
+JP3          | CONN HEADER 6POS .100 STR TIN    | 609-3263-ND         | $0.24
+JP5          | CONN HEADER 6POS .100 STR TIN    | 609-3263-ND         | $0.24
+JP1
+JP2
+JP6          | CONN HEADER 36POS .100 RT/A SMD  | S1113E-36-ND        | $3.19
+
+// LEDS
+LED1         | LED 3.2X1.6MM 640NM RED CLR SMD  | 754-1142-1-ND       | $0.20
+LED2         | LED 3.2X1.6MM 570NM GRN CLR SMD  | 754-1138-1-ND       | $0.73
+R10          | RES TF 62 OHM 5% 0.125W 0805     | RMCF0805JT62R0CT-ND | $0.03
+R11          | RES 75 OHM 1/8W 5% 0805 SMD      | RMCF0805JT75R0CT-ND | $0.03
+
+// audio
+R19          | RES 4.02K OHM 1/8W 1% 0805 SMD   | RMCF0805FT4K02CT-ND | $0.04
+R20          | RES 4.02K OHM 1/8W 1% 0805 SMD   | RMCF0805FT4K02CT-ND | $0.04
+C7           | CAP CER 10000PF 50V 10% X7R 0603 | 399-1091-1-ND       | $0.03
+C8           | CAP CER 10000PF 50V 10% X7R 0603 | 399-1091-1-ND       | $0.03
+
+// vga red
+R1           | RES 470 OHM 1/8W 5% 0805 SMD     | RMCF0805JT470RCT-ND | $0.021
+R4           | RES 470 OHM 1/8W 5% 0805 SMD     | RMCF0805JT470RCT-ND | $0.021
+R7           | RES 470 OHM 1/8W 5% 0805 SMD     | RMCF0805JT470RCT-ND | $0.021
+
+// vga green
+R2           | RES 1K OHM 1/8W 5% 0805 SMD      | RMCF0805JT1K00CT-ND | $0.021
+R5           | RES 1K OHM 1/8W 5% 0805 SMD      | RMCF0805JT1K00CT-ND | $0.021
+R8           | RES 1K OHM 1/8W 5% 0805 SMD      | RMCF0805JT1K00CT-ND | $0.021
+
+// vga blue
+R3           | RES 1.8K OHM 1/8W 5% 0805 SMD    | RMCF0805JT1K80CT-ND | $0.021
+R6           | RES 1.8K OHM 1/8W 5% 0805 SMD    | RMCF0805JT1K80CT-ND | $0.021
+R9           | RES 1.8K OHM 1/8W 5% 0805 SMD    | RMCF0805JT1K80CT-ND | $0.021
+
+// prog_b
+R12          | RES 820 OHM 1/8W 5% 0805 SMD     | RMCF0805JT820RCT-ND | $0.03
+
+// vccint
+C1           | CAP CER 0.1UF 50V Y5V 0603       | 311-1343-1-ND       | $0.017
+C2           | CAP CER 0.1UF 50V Y5V 0603       | 311-1343-1-ND       | $0.017
+C3           | CAP CER 0.1UF 50V Y5V 0603       | 311-1343-1-ND       | $0.017
+C4           | CAP CER 0.1UF 50V Y5V 0603       | 311-1343-1-ND       | $0.017
+
+// 1.2v
+C5           | CAP CER 1UF 10V 10% X5R 0603     | 399-3118-1-ND       | $0.07
+C6           | CAP CER 1UF 10V 10% X5R 0603     | 399-3118-1-ND       | $0.07
+
+X1           | CONN HD D-SUB RCPT R/A 15POS     | A35116-ND           | $1.96
+QG1          | OSCILLATOR 50.0000MHZ 3.3V SMD   | 478-4792-1-ND       | $4.06
+U3           | IC FLASH 16MBIT 75MHZ 8SOIC      | M25P16-VMN6P-ND     | $1.06
+U4           | IC FLASH 16MBIT 75MHZ 8SOIC      | M25P16-VMN6P-ND     | $1.06
+U2           | IC REG LDO 1.2V 300MA SOT23-5    | 296-29753-1-ND      | $0.65
+U1           | IC FPGA SPARTAN-3A 200K 100-VQFP | 122-1594-ND         | $12.37
