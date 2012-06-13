@@ -173,3 +173,5 @@ junk += $(project)_err.twr $(project)_err.twx
 
 clean::
 	rm -rf $(junk)
+	rm -fr *.log *.html *.xwbt
+	rm -fr _xmsgs
