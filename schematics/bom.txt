@@ -1,6 +1,6 @@
 // headers
-JP3          | CONN HEADER 6POS .100 STR TIN    | 609-3263-ND         | $0.24
-JP5          | CONN HEADER 6POS .100 STR TIN    | 609-3263-ND         | $0.24
+JP3          | CONN HEADER 6POS .100 STR TIN    | 609-3306-ND         | $0.24
+JP5          | CONN HEADER 6POS .100 STR TIN    | 609-3306-ND         | $0.24
 JP1
 JP2
 JP6          | CONN HEADER 36POS .100 RT/A SMD  | S1113E-36-ND        | $3.19
