@@ -1,5 +1,6 @@
 #include <msp430.h>
-#include <GP.h>
+#include <stdint.h>
+#include "../../../GP.h"
 
 void spr(uint16_t x, uint16_t y, uint8_t pal)
 {
