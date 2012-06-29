@@ -46,7 +46,7 @@ C5           | CAP CER 1UF 10V 10% X5R 0603     | 399-3118-1-ND       | $0.07
 C6           | CAP CER 1UF 10V 10% X5R 0603     | 399-3118-1-ND       | $0.07
 
 X1           | CONN HD D-SUB RCPT R/A 15POS     | A35116-ND           | $1.96
-QG1          | OSCILLATOR 50.0000MHZ 3.3V SMD   | 478-4792-1-ND       | $4.06
+QG1          | OSC 50.0000 MHZ 3.3V SMD         | CTX327LVCT-ND       | $1.85
 U3           | IC FLASH 16MBIT 75MHZ 8SOIC      | M25P16-VMN6P-ND     | $1.06
 U4           | IC FLASH 16MBIT 75MHZ 8SOIC      | M25P16-VMN6P-ND     | $1.06
 U2           | IC REG LDO 1.2V 300MA SOT23-5    | 296-29753-1-ND      | $0.65
