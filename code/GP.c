@@ -6,6 +6,11 @@ uint8_t gp_cur_spr = 0;    // current sprite, incremented by xsprite/xhide
 
 void GP_begin(void)
 {
+
+    // TODO:
+    // put FPGA_CS pin in high Z state immediately
+    // it's used for FPGA init
+
     delay(250);
 
     // TODO:
