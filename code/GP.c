@@ -1,6 +1,6 @@
 #include <msp430.h>
 #include <stdint.h>
-#include <GP.h>
+#include "GP.h"
 
 uint8_t gp_cur_spr = 0;    // current sprite, incremented by xsprite/xhide
 
@@ -21,7 +21,8 @@ void GP_begin(void)
     
     GP_wr(J1_RESET, 1);           // HALT coprocessor
     __wstart(RAM_SPR);            // Hide all sprites
-    for (uint16_t i = 0; i < 512; i++)
+    uint16_t i = 0;
+    for (i = 0; i < 512; i++)
         GP_xhide();
     __end();
     GP_fill(RAM_PIC, 0, 1024 * 10);  // Zero all character RAM
