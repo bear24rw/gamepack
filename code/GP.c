@@ -4,6 +4,9 @@
 
 uint8_t gp_cur_spr = 0;    // current sprite, incremented by xsprite/xhide
 
+uint8_t nes_data_1 = 0;
+uint8_t nes_data_2 = 0;
+
 void GP_begin(void)
 {
 
@@ -18,7 +21,10 @@ void GP_begin(void)
     // configure SPI
     // set CS pin high
 
-    
+    // setup NES controller pins
+    P_NES_DIR |= (NES_LATCH_PIN | NES_CLK_PIN);
+    P_NES_DIR &= ~(NES_DATA_1_PIN | NES_DATA_2_PIN);
+
     GP_wr(J1_RESET, 1);           // HALT coprocessor
     __wstart(RAM_SPR);            // Hide all sprites
     uint16_t i = 0;
@@ -156,5 +162,30 @@ void spi_transfer(uint8_t byte)
 void delay(uint16_t ms)
 {
     //TODO implement ms delay
+}
+
+void GP_nes_read(void)
+{
+    nes_data_1 = 0;
+    nes_data_2 = 0;
+
+    P_NES_OUT |= NES_LATCH_PIN;
+    P_NES_OUT &= ~NES_LATCH_PIN;
+
+    if (P_NES_IN & NES_DATA_1_PIN) nes_data_1 = 1;
+    if (P_NES_IN & NES_DATA_2_PIN) nes_data_2 = 1;
+
+    uint8_t i = 8;
+    while (--i)
+    {
+        P_NES_OUT |= NES_CLK_PIN;
+        P_NES_OUT &= ~NES_CLK_PIN;
+
+        nes_data_1 <<= 1;
+        nes_data_2 <<= 1;
+
+        if (P_NES_IN & NES_DATA_1_PIN) nes_data_1 |= 1;
+        if (P_NES_IN & NES_DATA_2_PIN) nes_data_2 |= 1;
+    }
 }
 

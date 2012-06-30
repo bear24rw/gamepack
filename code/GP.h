@@ -3,6 +3,30 @@
 
 #include <stdint.h>
 
+#define NES_LATCH_PIN   BIT1
+#define NES_CLK_PIN     BIT2
+#define NES_DATA_1_PIN  BIT3
+#define NES_DATA_2_PIN  BIT4
+
+#define P_NES_IN        P2IN
+#define P_NES_OUT       P2OUT
+#define P_NES_DIR       P2DIR
+
+extern uint8_t nes_data_1;
+extern uint8_t nes_data_2;
+
+#define A               (1 << 7)
+#define B               (1 << 6)
+#define SELECT          (1 << 5)
+#define START           (1 << 4)
+#define UP              (1 << 3)
+#define DOWN            (1 << 2)
+#define LEFT            (1 << 1)
+#define RIGHT           (1 << 0)
+
+#define GP_player_1(x)  (~x & nes_data_1)
+#define GP_player_2(x)  (~x & nes_data_2)
+
 #define LOW_BYTE(x) (x & 0xFF)
 #define HIGH_BYTE(x) (x >> 8)
 
@@ -59,6 +83,8 @@ void GP_putstr(uint16_t x, uint16_t y, const char *s);
 
 void GP_wr(uint16_t addr, uint8_t v);
 void GP_wr16(uint16_t addr, uint16_t v);
+
+void GP_nes_read(void);
 
 void __start(uint16_t addr);
 void __wstart(uint16_t addr);
