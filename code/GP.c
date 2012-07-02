@@ -154,7 +154,7 @@ void __wstart(uint16_t addr)
 
 void __start(uint16_t addr)
 {
-    //TODO: CS pin LOW
+    P1OUT &= ~CS_bit;
     spi_transfer(LOW_BYTE(addr));
     spi_transfer(HIGH_BYTE(addr));
 }
