@@ -3,14 +3,31 @@
 
 #include <stdint.h>
 
-#define NES_LATCH_PIN   BIT1
-#define NES_CLK_PIN     BIT2
-#define NES_DATA_1_PIN  BIT3
-#define NES_DATA_2_PIN  BIT4
+#define P_FLASH_CS_OUT  P2OUT
+#define P_FLASH_CS_DIR  P2DIR
+#define FLASH_CS_PIN    BIT5
 
-#define P_NES_IN        P2IN
-#define P_NES_OUT       P2OUT
-#define P_NES_DIR       P2DIR
+#define P_FPGA_CS_OUT   P2OUT
+#define P_FPGA_CS_DIR   P2DIR
+#define FPGA_CS_PIN     BIT0
+
+#define P_GPIO_IN       P2IN
+#define P_GPIO_OUT      P2OUT
+#define P_GPIO_DIR      P2DIR
+
+#define GPIO_1_PIN      BIT3
+#define GPIO_2_PIN      BIT4
+#define GPIO_3_PIN      BIT1
+#define GPIO_4_PIN      BIT2
+
+#define NES_LATCH_PIN   GPIO_1_PIN
+#define NES_CLK_PIN     GPIO_2_PIN
+#define NES_DATA_1_PIN  GPIO_3_PIN
+#define NES_DATA_2_PIN  GPIO_4_PIN
+
+#define P_NES_IN        P_GPIO_IN
+#define P_NES_OUT       P_GPIO_OUT
+#define P_NES_DIR       P_GPIO_DIR
 
 extern uint8_t nes_data_1;
 extern uint8_t nes_data_2;
@@ -70,11 +87,6 @@ extern uint8_t nes_data_2;
 #define RAM_SPR     0x3000    // Sprite Control, 512 x 4 = 2048 bytes
 #define RAM_SPRPAL  0x3800    // Sprite Palettes, 4 x 256 = 2048 bytes
 #define RAM_SPRIMG  0x4000    // Sprite Image, 64 x 256 = 16384 bytes
-
-#define CS_bit      BIT0    // Not sure which bit to use here-- set up 
-                            // chip select for pin P1.0 (the first GPIO 
-                            // pin). If it needs to be a diff pin, we 
-                            // can easliy change this
 
 
 void GP_begin(void);

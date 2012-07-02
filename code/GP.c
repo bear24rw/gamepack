@@ -18,7 +18,7 @@ void GP_begin(void)
 
     // TODO:
     // setup CS pin as output
-    P1DIR |= CS_bit;                // P1.0
+    P1DIR |= FPGA_CS_PIN;                // P1.0
     
     // configure SPI
     UCA0CTL1 = UCSWRST;             // reset the USCI to configure SPI
@@ -29,7 +29,7 @@ void GP_begin(void)
     IE2 |= UCA0TXIE+UCA0RXIE;       // enable the interrupts in case we want them. NEED TO ENABLE GLOBAL INTERRUPTS AT SOME POINT IF WE USE THESE. 
 
     // set CS pin high
-    P1OUT |= CS_bit;
+    P1OUT |= FPGA_CS_PIN;
 
     // setup NES controller pins
     P_NES_DIR |= (NES_LATCH_PIN | NES_CLK_PIN);
@@ -154,14 +154,14 @@ void __wstart(uint16_t addr)
 
 void __start(uint16_t addr)
 {
-    P1OUT &= ~CS_bit;
+    P1OUT &= ~FPGA_CS_PIN;
     spi_transfer(LOW_BYTE(addr));
     spi_transfer(HIGH_BYTE(addr));
 }
 
 void __end(void)
 {
-    P1OUT |= CS_bit;
+    P1OUT |= FPGA_CS_PIN;
 }
 
 void spi_transfer(uint8_t byte)
