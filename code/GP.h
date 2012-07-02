@@ -71,6 +71,11 @@ extern uint8_t nes_data_2;
 #define RAM_SPRPAL  0x3800    // Sprite Palettes, 4 x 256 = 2048 bytes
 #define RAM_SPRIMG  0x4000    // Sprite Image, 64 x 256 = 16384 bytes
 
+#define CS_bit      BIT0    // Not sure which bit to use here-- set up 
+                            // chip select for pin P1.0 (the first GPIO 
+                            // pin). If it needs to be a diff pin, we 
+                            // can easliy change this
+
 
 void GP_begin(void);
 
