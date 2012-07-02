@@ -18,8 +18,18 @@ void GP_begin(void)
 
     // TODO:
     // setup CS pin as output
+    P1DIR |= CS_bit;                // P1.0
+    
     // configure SPI
+    UCA0CTL1 = UCSWRST;             // reset the USCI to configure SPI
+    UCA0CTL0 = UCMST+UCSYNC;        // LSB first, 8-bit data, master mode, 3-pin SPI, synchronous
+    UCA0CTL1 = UCSSEL_2;            // USCI clock source: SMCLK. Use UCSSEL_1 if you want ACLK.
+    //P1.1 SOMI, P1.2 SIMO, P1.4 CLK. Need to configure P1SEL once I figure out if this is the primary or secondary module
+    UCA0CTL1 &= ~UCSWRST;           // clear UCSWRST
+    IE2 |= UCA0TXIE+UCA0RXIE;       // enable the interrupts in case we want them. NEED TO ENABLE GLOBAL INTERRUPTS AT SOME POINT IF WE USE THESE. 
+
     // set CS pin high
+    P1OUT |= CS_bit;
 
     // setup NES controller pins
     P_NES_DIR |= (NES_LATCH_PIN | NES_CLK_PIN);
@@ -151,17 +161,18 @@ void __start(uint16_t addr)
 
 void __end(void)
 {
-    //TODO CS pin high
+    P1OUT |= CS_bit;
 }
 
 void spi_transfer(uint8_t byte)
 {
-    // TODO implement spi transfer
+    while(UCA0STAT&UCBUSY);     // wait if a tx/rx is in progress
+    UCA0TXBUF = byte;
 }
 
 void delay(uint16_t ms)
 {
-    //TODO implement ms delay
+    //TODO implement ms delay. Use a timer I suppose. I'll do this tomorrow, I need to go to sleep
 }
 
 void GP_nes_read(void)
