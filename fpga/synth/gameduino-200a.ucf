@@ -8,15 +8,15 @@ net CLKA            loc=P89     | IOSTANDARD = LVCMOS33 ; # 50MHz
 
 net VGA_VSYNC_N     loc=P57     | IOSTANDARD = LVCMOS33 ;        
 net VGA_HSYNC_N     loc=P56     | IOSTANDARD = LVCMOS33 ;        
-net VGA_BLUE<0>     loc=P61     | IOSTANDARD = LVCMOS33 ;        
+net VGA_BLUE<2>     loc=P61     | IOSTANDARD = LVCMOS33 ;        
 net VGA_BLUE<1>     loc=P60     | IOSTANDARD = LVCMOS33 ;        
-net VGA_BLUE<2>     loc=P59     | IOSTANDARD = LVCMOS33 ;        
-net VGA_GREEN<0>    loc=P65     | IOSTANDARD = LVCMOS33 ;        
+net VGA_BLUE<0>     loc=P59     | IOSTANDARD = LVCMOS33 ;        
+net VGA_GREEN<2>    loc=P65     | IOSTANDARD = LVCMOS33 ;        
 net VGA_GREEN<1>    loc=P64     | IOSTANDARD = LVCMOS33 ;        
-net VGA_GREEN<2>    loc=P62     | IOSTANDARD = LVCMOS33 ;        
-net VGA_RED<0>      loc=P72     | IOSTANDARD = LVCMOS33 ;        
+net VGA_GREEN<0>    loc=P62     | IOSTANDARD = LVCMOS33 ;        
+net VGA_RED<2>      loc=P72     | IOSTANDARD = LVCMOS33 ;        
 net VGA_RED<1>      loc=P71     | IOSTANDARD = LVCMOS33 ;        
-net VGA_RED<2>      loc=P70     | IOSTANDARD = LVCMOS33 ;        
+net VGA_RED<0>      loc=P70     | IOSTANDARD = LVCMOS33 ;        
 
 net NES_CLK         loc=P6      | IOSTANDARD = LVCMOS33 ;
 net NES_LATCH       loc=P5      | IOSTANDARD = LVCMOS33 ;
