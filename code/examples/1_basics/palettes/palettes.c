@@ -4,7 +4,7 @@
 
 void spr(uint16_t x, uint16_t y, uint8_t pal)
 {
-    static int sprnum = 0;
+    static uint8_t sprnum = 0;
     GP_sprite(sprnum++, x, y, 0, pal, 0, 0);
 }
 
@@ -20,8 +20,7 @@ uint16_t random_color(void)
 
 int main(void)
 {
-
-    int i;
+    uint16_t i;
 
     GP_begin();
     GP_ascii();
@@ -61,6 +60,7 @@ int main(void)
         spr(200 + 20 * i, (8 * 18) + 60, 0xe | i);
     }
 
+    while (1) {}
 
     return 0;
 }
