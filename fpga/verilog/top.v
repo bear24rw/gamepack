@@ -851,9 +851,17 @@ module top(
 
   assign NES_CLK = 0;
   assign NES_LATCH = 0;
-  assign LED_1 = 1;
+  assign LED_1 = MISO;
   assign LED_2 = 1;
-  assign debug = 8'h00;
+
+  assign debug[0] = SCK;
+  assign debug[1] = MOSI;
+  assign debug[2] = MISO;
+  assign debug[3] = SSEL;
+  assign debug[4] = GPIO_1;
+  assign debug[5] = GPIO_2;
+  assign debug[6] = GPIO_3;
+  assign debug[7] = GPIO_4;
 
   wire mem_clk;
   wire [7:0] host_mem_data_wr;
@@ -866,8 +874,8 @@ module top(
   wire host_mem_wr;
   wire mem_rd;
 
-  wire vga_clk;
-  ck_div #(.DIV_BY(2), .MULT_BY(4)) vga_ck_gen(.ck_in(clka), .ck_out(vga_clk));
+  wire vga_clk = clka;
+  //ck_div #(.DIV_BY(2), .MULT_BY(4)) vga_ck_gen(.ck_in(clka), .ck_out(vga_clk));
 
   wire [15:0] j1_insn;
   wire [12:0] j1_insn_addr;
