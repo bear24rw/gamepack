@@ -50,7 +50,7 @@ vfiles += $(foreach core,$(xilinx_cores),$(core:.xco=.v))
 junk += $(local_corengcs)
 
 .PHONY: default xilinx_cores clean twr etwr
-default: $(project).bit $(project).mcs
+default: $(project).bit $(project).mcs $(project).bin
 xilinx_cores: $(corengcs)
 twr: $(project).twr
 etwr: $(project)_err.twr
@@ -87,16 +87,24 @@ date = $(shell date +%F-%H-%M)
 # some common junk
 junk += *.xrpt
 
-programming_files: $(project).bit $(project).mcs
+programming_files: $(project).bit $(project).mcs $(project).bin
 	mkdir -p $@/$(date)
 	mkdir -p $@/latest
-	for x in .bit .mcs .cfi _bd.bmm; do cp $(project)$$x $@/$(date)/$(project)$$x; cp $(project)$$x $@/latest/$(project)$$x; done
+	for x in .bit .mcs .bin .cfi _bd.bmm; do cp $(project)$$x $@/$(date)/$(project)$$x; cp $(project)$$x $@/latest/$(project)$$x; done
 	$(xil_env); xst -help | head -1 | sed 's/^/#/' | cat - $(project).scr > $@/$(date)/$(project).scr
 
 $(project).mcs: $(project).bit
 	$(xil_env); \
-	promgen -w -s $(flashsize) -p mcs -o $@ -u 0 $^
+	promgen -spi -w -s $(flashsize) -p mcs -o $@ -u 0 $^
 junk += $(project).mcs $(project).cfi $(project).prm
+
+$(project).bin: $(project).bit
+	$(xil_env); \
+	promgen -spi -w -s $(flashsize) -p bin -o $@ -u 0 $^
+	dd if=/dev/zero of=/tmp/zero.bin bs=1 count=$(flashsize)K
+	dd if=$@ of=/tmp/zero.bin conv=notrunc
+	mv /tmp/zero.bin $@.padded
+junk += $(project).bin
 
 $(project).bit: $(project)_par.ncd
 	$(xil_env); \
