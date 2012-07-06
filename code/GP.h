@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+extern uint8_t gp_cur_spr;    // current sprite, incremented by xsprite/xhide
+
 // ---------------------------------------------------------------------------
 // PIN MAPPINGS
 // ---------------------------------------------------------------------------
@@ -110,15 +112,19 @@ extern uint8_t nes_data_2;
 
 void GP_begin(void);
 
-void GP_sprite(uint16_t spr, uint16_t x, uint16_t y, uint8_t image, uint8_t palette, uint8_t rot, uint8_t jk);
+void GP_sprite(uint8_t spr, uint16_t x, uint16_t y, uint8_t image, uint8_t palette, uint8_t rot, uint8_t jk);
+void GP_xsprite(int16_t ox, int16_t oy, int8_t x, int8_t y, uint8_t image, uint8_t palette, uint8_t rot, uint8_t jk);
 void GP_fill(uint16_t addr, uint8_t v, uint16_t count);
+void GP_copy(uint16_t addr, const uint8_t *src, uint16_t count);
 void GP_xhide(void);
 void GP_ascii(void);
 void GP_setpal(uint16_t pal, uint16_t rgb);
 void GP_putstr(uint16_t x, uint16_t y, const char *s);
+void GP_waitvblank(void);
 
 void GP_wr(uint16_t addr, uint8_t v);
 void GP_wr16(uint16_t addr, uint16_t v);
+uint8_t GP_rd(uint16_t addr);
 
 void GP_nes_read(void);
 
@@ -126,7 +132,7 @@ void __start(uint16_t addr);
 void __wstart(uint16_t addr);
 void __end(void);
 
-void spi_transfer(uint8_t byte);
+uint8_t spi_transfer(uint8_t byte);
 
 void delay(uint16_t ms);
 
