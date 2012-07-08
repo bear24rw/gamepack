@@ -10,7 +10,10 @@ void spr(uint16_t x, uint16_t y, uint8_t pal)
 
 uint8_t random(uint8_t range)
 {
-    return 4;
+    static uint8_t x = 0;
+    x += 5;
+    if (x > range) x = 0;
+    return x;
 }
 
 uint16_t random_color(void)
