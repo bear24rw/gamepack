@@ -4,9 +4,6 @@
 
 int main(void)
 {
-    // setup LED
-    P1DIR |= BIT0;
-
     // initialize the GamePack
     GP_begin();
     GP_ascii();
@@ -28,14 +25,14 @@ int main(void)
         GP_putstr(0, 8, "UP: ");
         GP_putstr(0, 9, "DOWN: ");
 
-        if (GP_player_1(A)) GP_putstr(10, 2, "1"); else GP_putstr(10, 2, "0");
-        if (GP_player_1(B)) GP_putstr(10, 3, "1"); else GP_putstr(10, 3, "0");
-        if (GP_player_1(START)) GP_putstr(10, 4, "1"); else GP_putstr(10, 4, "0");
-        if (GP_player_1(SELECT)) GP_putstr(10, 5, "1"); else GP_putstr(10, 5, "0");
-        if (GP_player_1(LEFT)) GP_putstr(10, 6, "1"); else GP_putstr(10, 6, "0");
-        if (GP_player_1(RIGHT)) GP_putstr(10, 7, "1"); else GP_putstr(10, 7, "0");
-        if (GP_player_1(UP)) GP_putstr(10, 8, "1"); else GP_putstr(10, 8, "0");
-        if (GP_player_1(DOWN)) GP_putstr(10, 9, "1"); else GP_putstr(10, 9, "0");
+        if (GP_player_1(NES_A)) GP_putstr(10, 2, "1"); else GP_putstr(10, 2, "0");
+        if (GP_player_1(NES_B)) GP_putstr(10, 3, "1"); else GP_putstr(10, 3, "0");
+        if (GP_player_1(NES_START)) GP_putstr(10, 4, "1"); else GP_putstr(10, 4, "0");
+        if (GP_player_1(NES_SELECT)) GP_putstr(10, 5, "1"); else GP_putstr(10, 5, "0");
+        if (GP_player_1(NES_LEFT)) GP_putstr(10, 6, "1"); else GP_putstr(10, 6, "0");
+        if (GP_player_1(NES_RIGHT)) GP_putstr(10, 7, "1"); else GP_putstr(10, 7, "0");
+        if (GP_player_1(NES_UP)) GP_putstr(10, 8, "1"); else GP_putstr(10, 8, "0");
+        if (GP_player_1(NES_DOWN)) GP_putstr(10, 9, "1"); else GP_putstr(10, 9, "0");
 
         GP_putstr(20, 0, "Controller 2");
         GP_putstr(20, 1, "------------");
@@ -48,14 +45,14 @@ int main(void)
         GP_putstr(20, 8, "UP: ");
         GP_putstr(20, 9, "DOWN: ");
 
-        if (GP_player_2(A)) GP_putstr(30, 2, "1"); else GP_putstr(30, 2, "0");
-        if (GP_player_2(B)) GP_putstr(30, 3, "1"); else GP_putstr(30, 3, "0");
-        if (GP_player_2(START)) GP_putstr(30, 4, "1"); else GP_putstr(30, 4, "0");
-        if (GP_player_2(SELECT)) GP_putstr(30, 5, "1"); else GP_putstr(30, 5, "0");
-        if (GP_player_2(LEFT)) GP_putstr(30, 6, "1"); else GP_putstr(30, 6, "0");
-        if (GP_player_2(RIGHT)) GP_putstr(30, 7, "1"); else GP_putstr(30, 7, "0");
-        if (GP_player_2(UP)) GP_putstr(30, 8, "1"); else GP_putstr(30, 8, "0");
-        if (GP_player_2(DOWN)) GP_putstr(30, 9, "1"); else GP_putstr(30, 9, "0");
+        if (GP_player_2(NES_A)) GP_putstr(30, 2, "1"); else GP_putstr(30, 2, "0");
+        if (GP_player_2(NES_B)) GP_putstr(30, 3, "1"); else GP_putstr(30, 3, "0");
+        if (GP_player_2(NES_START)) GP_putstr(30, 4, "1"); else GP_putstr(30, 4, "0");
+        if (GP_player_2(NES_SELECT)) GP_putstr(30, 5, "1"); else GP_putstr(30, 5, "0");
+        if (GP_player_2(NES_LEFT)) GP_putstr(30, 6, "1"); else GP_putstr(30, 6, "0");
+        if (GP_player_2(NES_RIGHT)) GP_putstr(30, 7, "1"); else GP_putstr(30, 7, "0");
+        if (GP_player_2(NES_UP)) GP_putstr(30, 8, "1"); else GP_putstr(30, 8, "0");
+        if (GP_player_2(NES_DOWN)) GP_putstr(30, 9, "1"); else GP_putstr(30, 9, "0");
     }
 
     return 0;

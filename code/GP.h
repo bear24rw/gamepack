@@ -42,14 +42,14 @@ extern uint8_t gp_cur_spr;    // current sprite, incremented by xsprite/xhide
 extern uint8_t nes_data_1;
 extern uint8_t nes_data_2;
 
-#define A               (1 << 7)
-#define B               (1 << 6)
-#define SELECT          (1 << 5)
-#define START           (1 << 4)
-#define UP              (1 << 3)
-#define DOWN            (1 << 2)
-#define LEFT            (1 << 1)
-#define RIGHT           (1 << 0)
+#define NES_A               (1 << 7)
+#define NES_B               (1 << 6)
+#define NES_SELECT          (1 << 5)
+#define NES_START           (1 << 4)
+#define NES_UP              (1 << 3)
+#define NES_DOWN            (1 << 2)
+#define NES_LEFT            (1 << 1)
+#define NES_RIGHT           (1 << 0)
 
 #define GP_player_1(x)  (x & nes_data_1)
 #define GP_player_2(x)  (x & nes_data_2)
