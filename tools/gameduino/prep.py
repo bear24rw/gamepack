@@ -103,7 +103,7 @@ def dump(hh, name, data):
     :param data: the data to be dumped
     :type data: :class:`array.array`
     """
-    print >>hh, "static PROGMEM prog_uchar %s[] = {" % name
+    print >>hh, "const uint8_t %s[] = {" % name
     bb = array('B', data.tostring())
     for i in range(0, len(bb), 16):
         if (i & 0xff) == 0:
@@ -418,8 +418,8 @@ class ImageRAM(object):
         tiles = list(walktile(im, size))
 
         print >>self.hh, "#define %s_FRAMES %d" % (name.upper(), len(tiles))
-        animtype = ["byte", "int"][len(tiles) > 255]
-        print >>self.hh, """static void draw_%s(int x, int y, %s anim, byte rot, byte jk = 0) {\n  switch (anim) {""" % (name, animtype)
+        animtype = ["uint8_t", "int"][len(tiles) > 255]
+        print >>self.hh, """static void draw_%s(int x, int y, %s anim, uint8_t rot, uint8_t jk) {\n  switch (anim) {""" % (name, animtype)
         if palset == PALETTE256A:
             ncolors = 256
         elif palset == PALETTE256B:
@@ -447,7 +447,7 @@ class ImageRAM(object):
                     t.info = im.info    # workaround: PIL does not copy .info when cropping
                     if isnonblank(t):
                         (page, palsel) = self.add(array('B', t.tostring()), ncolors)
-                        loads += ["    GD.xsprite(x, y, %d, %d, %d, %d, rot, jk);" % (x * 16 - center[0], y * 16 - center[1], page, palset[palsel])]
+                        loads += ["    GP_xsprite(x, y, %d, %d, %d, %d, rot, jk);" % (x * 16 - center[0], y * 16 - center[1], page, palset[palsel])]
             if loads:
                 print >>self.hh, "  case %d:" % spr
                 print >>self.hh, "\n".join(loads)
