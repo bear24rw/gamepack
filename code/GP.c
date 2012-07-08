@@ -170,10 +170,10 @@ void GP_copy(uint16_t addr, const uint8_t *src, uint16_t count)
 
 void GP_xhide(void)
 {
-    spi_transfer(HIGH_BYTE(400));
     spi_transfer(LOW_BYTE(400));
     spi_transfer(HIGH_BYTE(400));
     spi_transfer(LOW_BYTE(400));
+    spi_transfer(HIGH_BYTE(400));
     gp_cur_spr++;
 }
 
@@ -193,8 +193,8 @@ void GP_wr(uint16_t addr, uint8_t v)
 void GP_wr16(uint16_t addr, uint16_t v)
 {
   __wstart(addr);
-  spi_transfer(HIGH_BYTE(v));
   spi_transfer(LOW_BYTE(v));
+  spi_transfer(HIGH_BYTE(v));
   __end();
 }
 
