@@ -51,8 +51,8 @@ extern uint8_t nes_data_2;
 #define LEFT            (1 << 1)
 #define RIGHT           (1 << 0)
 
-#define GP_player_1(x)  (~x & nes_data_1)
-#define GP_player_2(x)  (~x & nes_data_2)
+#define GP_player_1(x)  (x & nes_data_1)
+#define GP_player_2(x)  (x & nes_data_2)
 
 // ---------------------------------------------------------------------------
 // GAMEPACK MEMORY MAP

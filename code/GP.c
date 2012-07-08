@@ -245,8 +245,8 @@ void GP_nes_read(void)
     P_NES_OUT |= NES_LATCH_PIN;
     P_NES_OUT &= ~NES_LATCH_PIN;
 
-    if (P_NES_IN & NES_DATA_1_PIN) nes_data_1 = 1;
-    if (P_NES_IN & NES_DATA_2_PIN) nes_data_2 = 1;
+    if ((~P_NES_IN) & NES_DATA_1_PIN) nes_data_1 = 1;
+    if ((~P_NES_IN) & NES_DATA_2_PIN) nes_data_2 = 1;
 
     uint8_t i = 8;
     while (--i)
@@ -257,8 +257,8 @@ void GP_nes_read(void)
         nes_data_1 <<= 1;
         nes_data_2 <<= 1;
 
-        if (P_NES_IN & NES_DATA_1_PIN) nes_data_1 |= 1;
-        if (P_NES_IN & NES_DATA_2_PIN) nes_data_2 |= 1;
+        if ((~P_NES_IN) & NES_DATA_1_PIN) nes_data_1 |= 1;
+        if ((~P_NES_IN) & NES_DATA_2_PIN) nes_data_2 |= 1;
     }
 }
 
