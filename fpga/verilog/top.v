@@ -827,10 +827,10 @@ module top(
   output LED_1,
   output LED_2,
 
-  inout GPIO_1,
-  inout GPIO_2,
-  inout GPIO_3,
-  inout GPIO_4,
+  input GPIO_1,
+  input GPIO_2,
+  output GPIO_3,
+  output GPIO_4,
 
   input SCK,  
   input MOSI, 
@@ -849,8 +849,11 @@ module top(
 
   );
 
-  assign NES_CLK = 0;
-  assign NES_LATCH = 0;
+  assign NES_CLK = GPIO_1;
+  assign NES_LATCH = GPIO_2;
+  assign GPIO_3 = NES_DATA_1;
+  assign GPIO_4 = NES_DATA_2;
+
   assign LED_1 = MISO;
   assign LED_2 = 1;
 
@@ -1867,6 +1870,6 @@ ROM64X1 #(.INIT(64'b000000000001111111111111111111111111111111111111111111000000
   assign flashSCK = pin2j ? j1_flashSCK : SCK;
   assign flashSSEL = pin2f ? GPIO_1 : (pin2j ? j1_flashSSEL : 1);
 
-  assign GPIO_1 = (pin2j & (j1_p2_dir == 0)) ? j1_p2_o : 1'bz;
+  //assign GPIO_1 = (pin2j & (j1_p2_dir == 0)) ? j1_p2_o : 1'bz;
 
 endmodule // top
