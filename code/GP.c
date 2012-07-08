@@ -211,6 +211,12 @@ void __wstart(uint16_t addr)
     __start(0x8000 | addr);
 }
 
+void __wstartspr(uint8_t sprnum)
+{
+    __start((0x8000 | RAM_SPR) + (sprnum << 2));
+    gp_cur_spr = 0;
+}
+
 void __start(uint16_t addr)
 {
     P_FPGA_CS_OUT &= ~FPGA_CS_PIN;

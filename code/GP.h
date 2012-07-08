@@ -130,6 +130,7 @@ void GP_nes_read(void);
 
 void __start(uint16_t addr);
 void __wstart(uint16_t addr);
+void __wstartspr(uint8_t sprnum);
 void __end(void);
 
 uint8_t spi_transfer(uint8_t byte);
