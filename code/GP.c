@@ -143,6 +143,13 @@ void GP_putstr(uint16_t x, uint16_t y, const char *s)
     __end();
 }
 
+void GP_putnum(uint16_t x, uint16_t y, uint8_t s)
+{
+    __wstart((y << 6) + x);
+    spi_transfer('0'+s);
+    __end();
+}
+
 void GP_setpal(uint16_t pal, uint16_t rgb)
 {
     GP_wr16(RAM_PAL + (pal << 1), rgb);

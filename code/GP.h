@@ -120,6 +120,7 @@ void GP_xhide(void);
 void GP_ascii(void);
 void GP_setpal(uint16_t pal, uint16_t rgb);
 void GP_putstr(uint16_t x, uint16_t y, const char *s);
+void GP_putnum(uint16_t x, uint16_t y, uint8_t s);
 void GP_waitvblank(void);
 
 void GP_wr(uint16_t addr, uint8_t v);
