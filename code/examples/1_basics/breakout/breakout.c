@@ -327,7 +327,7 @@ int main(void)
                 // ball is coming from the left
                 else
                     // increase the speed
-                    ball_x_v -= 1;
+                    ball_x_v += 1;
 
                 if (ball_x_v > BALL_X_V_MAX) ball_x_v = BALL_X_V_MAX;
             }
