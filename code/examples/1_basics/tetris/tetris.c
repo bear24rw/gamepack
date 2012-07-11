@@ -23,7 +23,7 @@ uint8_t block_y = 0;
 
 uint8_t grid[GRID_WIDTH][GRID_HEIGHT];
 
-#define BUTTON_DEBOUNCE     2       // how many game loops until button is registered as pressed
+#define BUTTON_DEBOUNCE     3       // how many game loops until button is registered as pressed
 uint8_t left_debounce = 0;
 uint8_t right_debounce = 0;
 
