@@ -256,38 +256,48 @@ int main(void)
         // ********************************************************************
 
         //
-        // MOVE LEFT
-        //
-        if (GP_player_1(NES_LEFT) && (++left_debounce) == BUTTON_DEBOUNCE)
-        {
-            left_debounce = 0;
-            move_left();
-        }
-        //
-        // MOVE RIGHT
-        //
-        else if (GP_player_1(NES_RIGHT) && (++right_debounce)==BUTTON_DEBOUNCE)
-        {
-            right_debounce = 0;
-            move_right();
-        }
-        //
-        // UP (ROTATE)
-        //
-        else if (GP_player_1(NES_UP) && last_up == 0)
-        {
-            // player was last pressing up
-            last_up = 1;
-            rotate();
-        }
-
-        //
         // DOWN (SOFT DROP)
         //
         if (GP_player_1(NES_DOWN))
             drop_type = DROP_SOFT;
         else
+        {
             drop_type = DROP_NORM;
+
+            //
+            // MOVE LEFT
+            //
+            if (GP_player_1(NES_LEFT) && (++left_debounce) == BUTTON_DEBOUNCE)
+            {
+                left_debounce = 0;
+                move_left();
+            }
+            //
+            // MOVE RIGHT
+            //
+            else if (GP_player_1(NES_RIGHT) && (++right_debounce)==BUTTON_DEBOUNCE)
+            {
+                right_debounce = 0;
+                move_right();
+            }
+            //
+            // UP (ROTATE)
+            //
+            else if (GP_player_1(NES_UP) && last_up == 0)
+            {
+                // player was last pressing up
+                last_up = 1;
+                rotate();
+            }
+        }
+
+        // we can only rotate if we release the Up button then press it again
+        if (GP_player_1(NES_UP) == 0) last_up = 0;
+
+
+        // ********************************************************************
+        //                          ACTIONS
+        // ********************************************************************
 
         //
         // A (HARD DROP)
@@ -298,16 +308,9 @@ int main(void)
             last_a = 1;
         }
 
-        // we can only rotate if we release the Up button then press it again
-        if (GP_player_1(NES_UP) == 0) last_up = 0;
-
         // we can only hard drop if we release the A button then press it again
         if (GP_player_1(NES_A) == 0) last_a = 0;
 
-
-        // ********************************************************************
-        //                          ACTIONS
-        // ********************************************************************
 
         //
         // B (HOLD)
