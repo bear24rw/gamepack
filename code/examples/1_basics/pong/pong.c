@@ -15,6 +15,11 @@
 #define BALL_Y_V_MAX    5       // max x velocity
 #define BALL_Y_V_MIN    (-5)    // min x velocity
 
+#define BALL_SPRITE             3
+#define PADDLE_SPRITE_LEFT      0
+#define PADDLE_SPRITE_MIDDLE    1
+#define PADDLE_SPRITE_RIGHT     2
+
 int8_t absolute(int8_t x)
 {
     if (x < 0)
@@ -88,22 +93,22 @@ int main(void)
         // DRAW PADDLE 1
         //
         //ROTATE 90DEGREES
-        draw_sprite(PADDLE1_X, paddle1_y - 8 - 16, 36, 5, 0);
-        draw_sprite(PADDLE1_X, paddle1_y - 8 - 00, 37, 5, 0);
-        draw_sprite(PADDLE1_X, paddle1_y + 8 + 00, 38, 5, 0);
+        draw_sprite(PADDLE1_X, paddle1_y - 8 - 16, PADDLE_SPRITE_LEFT, 5, 0);
+        draw_sprite(PADDLE1_X, paddle1_y - 8 - 00, PADDLE_SPRITE_MIDDLE, 5, 0);
+        draw_sprite(PADDLE1_X, paddle1_y + 8 + 00, PADDLE_SPRITE_RIGHT, 5, 0);
 
         //
         // DRAW PADDLE 2
         //
-        draw_sprite(PADDLE2_X, paddle2_y - 8 - 16, 38, 3, 0);
-        draw_sprite(PADDLE2_X, paddle2_y - 8 - 00, 37, 3, 0);
-        draw_sprite(PADDLE2_X, paddle2_y + 8 + 00, 36, 3, 0);
+        draw_sprite(PADDLE2_X, paddle2_y - 8 - 16, PADDLE_SPRITE_RIGHT, 3, 0);
+        draw_sprite(PADDLE2_X, paddle2_y - 8 - 00, PADDLE_SPRITE_MIDDLE, 3, 0);
+        draw_sprite(PADDLE2_X, paddle2_y + 8 + 00, PADDLE_SPRITE_LEFT, 3, 0);
 
         //
         // DRAW BALL
         //
 
-        draw_sprite(ball_x - 8, ball_y - 8, 2, 0, 0);
+        draw_sprite(ball_x - 8, ball_y - 8, BALL_SPRITE, 0, 0);
 
         // finished drawing sprites
         __end();
