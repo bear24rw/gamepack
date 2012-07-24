@@ -4,9 +4,11 @@
 
 #include "header.h"
 
-#define ALIEN_A     0
-#define ALIEN_B     1
-#define ALIEN_C     2
+#define BULLET_SPRITE   8
+
+#define ALIEN_A         0
+#define ALIEN_B         1
+#define ALIEN_C         2
 
 // x y values are top left of alien
 void draw_alien(uint8_t alien, uint16_t x, uint16_t y, uint8_t anim)
