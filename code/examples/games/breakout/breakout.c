@@ -59,6 +59,7 @@ int main(void)
     int16_t ball_y_v = 2;
 
     uint8_t paused = 1;
+    uint8_t last_select = 0;    // last state of the select button
 
 
     // initialize the gamepack
@@ -245,12 +246,33 @@ int main(void)
         // finished drawing sprites
         __end();
 
+        // ********************************************************************
+        //                          PAUSE
+        // ********************************************************************
+
         if (paused)
         {
             if (GP_player_1(NES_START))
                 paused = 0;
 
             continue;
+        }
+
+        // ********************************************************************
+        //                        SCREENSHOT
+        // ********************************************************************
+
+        if (GP_player_1(NES_SELECT))
+        {
+            if (last_select == 0)
+            {
+                GP_screenshot(1);
+                last_select = 1;
+            }
+        }
+        else
+        {
+            last_select = 0;
         }
 
         // ********************************************************************
@@ -484,7 +506,6 @@ int main(void)
 
         }
 
-        //delay(3000);
     }
 
     return 0;
