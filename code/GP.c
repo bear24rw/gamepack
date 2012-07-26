@@ -45,6 +45,20 @@ void GP_begin(void)
     UCB0BR1 = 0;
     UCB0CTL1 &= ~UCSWRST;           // clear UCSWRST
 
+    // configure UART
+    P1SEL |= (BIT1 | BIT2);
+    P1SEL2 |= (BIT1 | BIT2);
+    P1DIR |= BIT2;
+    P1DIR &= ~BIT1;
+
+    UCA0CTL1 |= UCSSEL_2;
+
+    UCA0BR0 = 0xa0;                 // 100K baud
+    UCA0BR1 = 0x00;
+    UCA0MCTL = 0x00;
+
+    UCA0CTL1 &= ~UCSWRST;
+
 
     // setup NES controller pins
     P_NES_DIR |= (NES_LATCH_PIN | NES_CLK_PIN);
@@ -190,6 +204,60 @@ void GP_waitvblank(void)
     while (GP_rd(VBLANK) == 0);
 }
 
+void GP_screenshot(uint16_t frame)
+{
+  uint16_t yy, xx;
+  uint8_t undone[38];  // 300-long bitmap of lines pending
+
+  // initialize to 300 ones
+  uint8_t i = 0;
+  for (i = 0; i < 38; i++)
+      undone[i] = 0xFF;
+
+  undone[37] = 0xf;
+  uint16_t nundone = 300;
+
+  uart_send(0xa5);   // sync byte
+  uart_send(LOW_BYTE(frame));
+  uart_send(HIGH_BYTE(frame));
+
+  while (nundone) {
+    // find a pending line a short distance ahead of the raster
+    uint16_t hwline = GP_rd16(SCREENSHOT_Y) & 0x1ff;
+    for (yy = (hwline + 7) % 300; ((undone[yy>>3] >> (yy&7)) & 1) == 0; yy = (yy + 1) % 300);
+    GP_wr16(SCREENSHOT_Y, 0x8000 | yy);   // ask for it
+
+    // housekeeping while waiting: mark line done and send yy
+    undone[yy>>3] ^= (1 << (yy&7));
+    nundone--;
+    uart_send(LOW_BYTE(yy));
+    uart_send(HIGH_BYTE(yy));
+    while ((GP_rd(SCREENSHOT_Y + 1) & 0x80) == 0);
+
+    // Now send the line, compressing zero pixels
+    uint16_t zeroes = 0;
+    for (xx = 0; xx < 800; xx += 2) {
+      uint16_t v = GP_rd16(SCREENSHOT + xx);
+      if (v == 0) {
+        zeroes++;
+      } else {
+        if (zeroes) {
+          uart_send(LOW_BYTE(zeroes));
+          uart_send(0x80 | HIGH_BYTE(zeroes));
+          zeroes = 0;
+        }
+        uart_send(LOW_BYTE(v));
+        uart_send(HIGH_BYTE(v));
+      }
+    }
+    if (zeroes) {
+      uart_send(LOW_BYTE(zeroes));
+      uart_send(0x80 | HIGH_BYTE(zeroes));
+    }
+  }
+  GP_wr16(SCREENSHOT_Y, 0);   // restore screen to normal
+}
+
 void GP_wr(uint16_t addr, uint8_t v)
 {
     __wstart(addr);
@@ -210,6 +278,18 @@ uint8_t GP_rd(uint16_t addr)
     __start(addr);
     uint8_t r = spi_transfer(0x00);
     __end();
+    return r;
+}
+
+uint16_t GP_rd16(uint16_t addr)
+{
+    uint16_t r;
+
+    __start(addr);
+    r = spi_transfer(0);
+    r |= (spi_transfer(0) << 8);
+    __end();
+
     return r;
 }
 
@@ -242,6 +322,13 @@ uint8_t spi_transfer(uint8_t byte)
     while(UCB0STAT & UCBUSY);     // wait for tx to finish
     return UCB0RXBUF;
 }
+
+void uart_send(uint8_t byte)
+{
+    while (!(IFG2 & UCA0TXIFG));
+    UCA0TXBUF = byte;
+}
+
 
 void delay(uint16_t ms)
 {

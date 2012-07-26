@@ -122,10 +122,12 @@ void GP_setpal(uint16_t pal, uint16_t rgb);
 void GP_putstr(uint16_t x, uint16_t y, const char *s);
 void GP_putnum(uint16_t x, uint16_t y, uint8_t s);
 void GP_waitvblank(void);
+void GP_screenshot(uint16_t frame);
 
 void GP_wr(uint16_t addr, uint8_t v);
 void GP_wr16(uint16_t addr, uint16_t v);
 uint8_t GP_rd(uint16_t addr);
+uint16_t GP_rd16(uint16_t addr);
 
 void GP_nes_read(void);
 
@@ -135,6 +137,7 @@ void __wstartspr(uint8_t sprnum);
 void __end(void);
 
 uint8_t spi_transfer(uint8_t byte);
+void uart_send(uint8_t byte);
 
 void delay(uint16_t ms);
 
