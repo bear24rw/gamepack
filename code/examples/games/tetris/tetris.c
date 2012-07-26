@@ -429,6 +429,8 @@ int main(void)
         // check for new high score
         if (score > high_score) high_score = score;
 
+        delay(30000);
+
     }
 
     return 0;
