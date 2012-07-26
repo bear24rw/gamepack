@@ -38,14 +38,11 @@ int main(void)
     GP_copy(RAM_PAL, sprites256_pal, sizeof(sprites256_pal));
 
 
-    for (i = 0; i < NUM_SPRITES; i++)
-    {
-        sprites[i].x = random(0, 400-16);
-        sprites[i].y = random(0, 300-16);
-        sprites[i].vx = random(0,6)-3;
-        sprites[i].vy = random(0,6)-3;
-        sprites[i].sprite = (i % SPRITE_FRAMES);
-    }
+    for (i = 0; i < NUM_SPRITES; i++) sprites[i].x = random(0, 400-16);
+    for (i = 0; i < NUM_SPRITES; i++) sprites[i].y = random(0, 300-16);
+    for (i = 0; i < NUM_SPRITES; i++) sprites[i].vx = random(0,6)-3;
+    for (i = 0; i < NUM_SPRITES; i++) sprites[i].vy = random(0,6)-3;
+    for (i = 0; i < NUM_SPRITES; i++) sprites[i].sprite = random(0, SPRITE_FRAMES);
 
     while (1)
     {
