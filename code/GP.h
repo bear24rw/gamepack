@@ -140,5 +140,6 @@ uint8_t spi_transfer(uint8_t byte);
 void uart_send(uint8_t byte);
 
 void delay(uint16_t ms);
+uint16_t random(uint16_t min, uint16_t max);
 
 #endif

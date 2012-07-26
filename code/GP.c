@@ -4,6 +4,8 @@
 
 uint8_t gp_cur_spr = 0;    // current sprite, incremented by xsprite/xhide
 
+uint16_t lfsr = 0xACE1;     // LFSR random number
+
 uint8_t nes_data_1 = 0;
 uint8_t nes_data_2 = 0;
 
@@ -362,3 +364,38 @@ void GP_nes_read(void)
     }
 }
 
+uint16_t random(uint16_t min, uint16_t max)
+{
+    if (min > max) return 0;
+
+    if (min == max) return min;
+
+    uint16_t spread = max - min;
+
+    uint8_t i = 1;
+    uint16_t mask = 0x0000;
+
+    // increase mask size until it is just bigger than our max value
+    for (i = 1; i<16; i++)
+    {
+        mask = ~(0xFFFF << i);
+
+        // if our masked value is bigger than max value
+        if (mask > spread) break;
+    }
+
+    uint16_t result = 0;
+    do
+    {
+        // get new random number
+        lfsr = (lfsr >> 1) ^ (-(lfsr & 1u) & 0xB400u);
+
+        // mask the number to get it close to our spread
+        result = lfsr & mask;
+
+    } while (result > spread);
+
+    result += min;
+
+    return result;
+}
