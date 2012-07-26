@@ -31,6 +31,7 @@ uint8_t right_debounce = 0;
 uint8_t last_up = 0;
 uint8_t last_a = 0;
 uint8_t last_start = 0;
+uint8_t last_select = 0;
 
 #define DROP_TIME           6      // program loops until the piece drops
 uint16_t drop_clock = 0;
@@ -231,6 +232,23 @@ int main(void)
 
         // finished drawing sprites
         __end();
+
+        // ********************************************************************
+        //                        SCREENSHOT
+        // ********************************************************************
+
+        if (GP_player_1(NES_SELECT))
+        {
+            if (last_select == 0)
+            {
+                GP_screenshot(1);
+                last_select = 1;
+            }
+        }
+        else
+        {
+            last_select = 0;
+        }
 
         // ********************************************************************
         //                          PAUSE
