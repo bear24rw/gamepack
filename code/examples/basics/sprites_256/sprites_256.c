@@ -5,6 +5,8 @@
 #include "header.h"
 #include "background.h"
 
+#define NUM_SPRITES     62
+
 struct
 {
     uint16_t x;
@@ -12,11 +14,11 @@ struct
     int8_t vx;
     int8_t vy;
     uint8_t sprite;
-} sprites[63];
+} sprites[NUM_SPRITES];
 
 int main(void)
 {
-    uint16_t i;
+    uint8_t i;
 
     // initialize the gamepack
     GP_begin();
@@ -36,12 +38,12 @@ int main(void)
     GP_copy(RAM_PAL, sprites256_pal, sizeof(sprites256_pal));
 
 
-    for (i = 0; i < 63; i++)
+    for (i = 0; i < NUM_SPRITES; i++)
     {
-        sprites[i].x = i*6;
-        sprites[i].y = i*4;
-        sprites[i].vx = 1;
-        sprites[i].vy = 2;
+        sprites[i].x = random(0, 400-16);
+        sprites[i].y = random(0, 300-16);
+        sprites[i].vx = random(0,6)-3;
+        sprites[i].vy = random(0,6)-3;
         sprites[i].sprite = (i % SPRITE_FRAMES);
     }
 
@@ -53,7 +55,7 @@ int main(void)
         __wstartspr(0);
 
         // update all sprites
-        for (i = 0; i < 64; i++)
+        for (i = 0; i < NUM_SPRITES; i++)
         {
             if (sprites[i].x + sprites[i].vx + 16 > 400) sprites[i].vx *= -1;
             if (sprites[i].y + sprites[i].vy + 16 > 300) sprites[i].vy *= -1;
@@ -62,9 +64,6 @@ int main(void)
 
             sprites[i].x += sprites[i].vx;
             sprites[i].y += sprites[i].vy;
-
-            sprites[i].x -= 2;
-            sprites[i].y -= 1;
 
             // draw 4 to get close to 256 since we don't have enough ram to actually store them all
             draw_sprite(sprites[i].x,
