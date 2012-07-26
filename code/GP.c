@@ -333,7 +333,7 @@ void uart_send(uint8_t byte)
 void delay(uint16_t ms)
 {
     //TODO implement ms delay. Use a timer I suppose. I'll do this tomorrow, I need to go to sleep
-    volatile uint16_t i;
+    volatile uint16_t i = ms;
     while (i) { i--; };
 }
 
