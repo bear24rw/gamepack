@@ -115,8 +115,7 @@ int main(void)
         GP_putnum(41, 17, abs(ball_x_v));
         GP_putnum(41, 18, abs(ball_y_v));
 
-        // reset the sprite counter to 0
-        __wstartspr(0); 
+        
 
         //
         // NUMBER OF LIVES

@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v4.1.0                      
 ******************************************************************************
->> Linked Mon Jun 25 21:07:49 2012
+>> Linked Sat Jul 21 13:10:09 2012
 
 OUTPUT FILE NAME:   <palettes.out>
-ENTRY POINT SYMBOL: "_c_int00"  address: 0000c4ca
+ENTRY POINT SYMBOL: "_c_int00"  address: 0000c63e
 
 
 MEMORY CONFIGURATION
@@ -14,12 +14,12 @@ MEMORY CONFIGURATION
   SFR                   00000000   00000010  00000000  00000010  RWIX
   PERIPHERALS_8BIT      00000010   000000f0  00000000  000000f0  RWIX
   PERIPHERALS_16BIT     00000100   00000100  00000000  00000100  RWIX
-  RAM                   00000200   00000200  00000063  0000019d  RWIX
+  RAM                   00000200   00000200  00000066  0000019a  RWIX
   INFOD                 00001000   00000040  00000000  00000040  RWIX
   INFOC                 00001040   00000040  00000000  00000040  RWIX
   INFOB                 00001080   00000040  00000000  00000040  RWIX
   INFOA                 000010c0   00000040  00000000  00000040  RWIX
-  FLASH                 0000c000   00003fe0  000008fe  000036e2  RWIX
+  FLASH                 0000c000   00003fe0  00000a92  0000354e  RWIX
   INT00                 0000ffe0   00000002  00000000  00000002  RWIX
   INT01                 0000ffe2   00000002  00000000  00000002  RWIX
   INT02                 0000ffe4   00000002  00000000  00000002  RWIX
@@ -46,10 +46,11 @@ section   page    origin      length       input sections
 .init_array 
 *          0    0000c000    00000000     UNINITIALIZED
 
-.data      0    00000200    00000013     
+.data      0    00000200    00000016     
                   00000200    00000010     GP.obj (.data:stretch)
-                  00000210    00000002     palettes.obj (.data)
-                  00000212    00000001     GP.obj (.data)
+                  00000210    00000003     GP.obj (.data)
+                  00000213    00000001     --HOLE--
+                  00000214    00000002     palettes.obj (.data)
 
 .TI.persistent 
 *          0    00000200    00000000     UNINITIALIZED
@@ -58,44 +59,47 @@ section   page    origin      length       input sections
                   000003b0    00000002     rts430_eabi.lib : boot.obj (.stack)
                   000003b2    0000004e     --HOLE--
 
-.text      0    0000c000    0000058a     
-                  0000c000    000001c6     palettes.obj (.text:main)
-                  0000c1c6    000000e0     GP.obj (.text:GP_begin)
-                  0000c2a6    0000008a     GP.obj (.text:GP_ascii)
-                  0000c330    0000005e     rts430_eabi.lib : copy_decompress_rle.obj (.text:__TI_decompress_rle_core)
-                  0000c38e    0000005e                     : autoinit.obj (.text:_auto_init)
-                  0000c3ec    0000003c     palettes.obj (.text:random_color)
-                  0000c428    0000002c     rts430_eabi.lib : asr16.obj (.text)
-                  0000c454    0000002c                     : lsl16.obj (.text)
-                  0000c480    0000002a     palettes.obj (.text:spr)
-                  0000c4aa    00000020     GP.obj (.text:GP_putstr)
-                  0000c4ca    0000001a     rts430_eabi.lib : boot.obj (.text:_c_int00_noexit)
-                  0000c4e4    00000014                     : mult16.obj (.text)
-                  0000c4f8    00000012     GP.obj (.text:GP_sprite)
-                  0000c50a    00000012     rts430_eabi.lib : copy_decompress_none.obj (.text:decompress:none:__TI_decompress_none)
-                  0000c51c    00000012                     : memcpy.obj (.text:memcpy)
-                  0000c52e    00000010     GP.obj (.text:GP_fill)
-                  0000c53e    00000010     rts430_eabi.lib : epilog.obj (.text)
-                  0000c54e    0000000c     GP.obj (.text:GP_setpal)
-                  0000c55a    0000000a     GP.obj (.text:__wstart)
-                  0000c564    00000006     GP.obj (.text:GP_wr16)
-                  0000c56a    00000006     GP.obj (.text:GP_wr)
-                  0000c570    00000006     GP.obj (.text:GP_xhide)
-                  0000c576    00000006     rts430_eabi.lib : copy_decompress_rle.obj (.text:decompress:rle24:__TI_decompress_rle24)
-                  0000c57c    00000004                     : pre_init.obj (.text:_system_pre_init)
-                  0000c580    00000004                     : exit.obj (.text:abort)
-                  0000c584    00000004     palettes.obj (.text:random)
-                  0000c588    00000002     GP.obj (.text:__start)
+.text      0    0000c000    0000071c     
+                  0000c000    000001c2     palettes.obj (.text:main)
+                  0000c1c2    00000158     GP.obj (.text:GP_begin)
+                  0000c31a    0000008a     GP.obj (.text:GP_ascii)
+                  0000c3a4    0000006a     GP.obj (.text:GP_sprite)
+                  0000c40e    0000005e     rts430_eabi.lib : copy_decompress_rle.obj (.text:__TI_decompress_rle_core)
+                  0000c46c    0000005e                     : autoinit.obj (.text:_auto_init)
+                  0000c4ca    00000048     palettes.obj (.text:random_color)
+                  0000c512    0000002c     rts430_eabi.lib : asr16.obj (.text)
+                  0000c53e    0000002c                     : lsl16.obj (.text)
+                  0000c56a    0000002a     palettes.obj (.text:spr)
+                  0000c594    00000028     GP.obj (.text:GP_putstr)
+                  0000c5bc    00000022     GP.obj (.text:GP_fill)
+                  0000c5de    00000022     GP.obj (.text:GP_wr16)
+                  0000c600    00000022     GP.obj (.text:GP_xhide)
+                  0000c622    0000001c     GP.obj (.text:__start)
+                  0000c63e    0000001a     rts430_eabi.lib : boot.obj (.text:_c_int00_noexit)
+                  0000c658    00000016     GP.obj (.text:GP_wr)
+                  0000c66e    00000016     GP.obj (.text:delay)
+                  0000c684    00000016     palettes.obj (.text:random)
+                  0000c69a    00000014     rts430_eabi.lib : mult16.obj (.text)
+                  0000c6ae    00000012                     : copy_decompress_none.obj (.text:decompress:none:__TI_decompress_none)
+                  0000c6c0    00000012                     : memcpy.obj (.text:memcpy)
+                  0000c6d2    00000010                     : epilog.obj (.text)
+                  0000c6e2    00000010     GP.obj (.text:spi_transfer)
+                  0000c6f2    0000000c     GP.obj (.text:GP_setpal)
+                  0000c6fe    0000000a     GP.obj (.text:__wstart)
+                  0000c708    00000006     GP.obj (.text:__end)
+                  0000c70e    00000006     rts430_eabi.lib : copy_decompress_rle.obj (.text:decompress:rle24:__TI_decompress_rle24)
+                  0000c714    00000004                     : pre_init.obj (.text:_system_pre_init)
+                  0000c718    00000004                     : exit.obj (.text:abort)
 
-.const     0    0000c58a    00000354     
-                  0000c58a    00000300     GP.obj (.const:font8x8)
-                  0000c88a    00000054     palettes.obj (.const:.string)
+.const     0    0000c71c    00000354     
+                  0000c71c    00000300     GP.obj (.const:font8x8)
+                  0000ca1c    00000054     palettes.obj (.const:.string)
 
-.cinit     0    0000c8de    00000020     
-                  0000c8de    00000017     (.cinit..data.load) [load image]
-                  0000c8f5    00000001     --HOLE-- [fill = 0]
-                  0000c8f6    00000004     (__TI_handler_table)
-                  0000c8fa    00000004     (__TI_cinit_table)
+.cinit     0    0000ca70    00000022     
+                  0000ca70    00000019     (.cinit..data.load) [load image, compression = rle]
+                  0000ca89    00000001     --HOLE-- [fill = 0]
+                  0000ca8a    00000004     (__TI_handler_table)
+                  0000ca8e    00000004     (__TI_cinit_table)
 
 .reset     0    0000fffe    00000002     
                   0000fffe    00000002     rts430_eabi.lib : boot.obj (.reset)
@@ -103,13 +107,13 @@ section   page    origin      length       input sections
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 0000c8fa records: 1, size/record: 4, table size: 4
-	.data: load addr=0000c8de, load size=00000017 bytes, run addr=00000200, run size=00000013 bytes, compression=copy
+__TI_cinit_table @ 0000ca8e records: 1, size/record: 4, table size: 4
+	.data: load addr=0000ca70, load size=00000019 bytes, run addr=00000200, run size=00000016 bytes, compression=rle
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 0000c8f6 records: 2, size/record: 2, table size: 4
+__TI_handler_table @ 0000ca8a records: 2, size/record: 2, table size: 4
 	index: 0, handler: __TI_decompress_rle24
 	index: 1, handler: __TI_decompress_none
 
@@ -128,7 +132,7 @@ address    name
 00000057   BCSCTL1
 00000058   BCSCTL2
 00000053   BCSCTL3
-0000c580   C$$EXIT
+0000c718   C$$EXIT
 00000059   CACTL1
 0000005a   CACTL2
 000010fb   CALBC1_12MHZ
@@ -144,15 +148,15 @@ address    name
 00000128   FCTL1
 0000012a   FCTL2
 0000012c   FCTL3
-0000c2a6   GP_ascii
-0000c1c6   GP_begin
-0000c52e   GP_fill
-0000c4aa   GP_putstr
-0000c54e   GP_setpal
-0000c4f8   GP_sprite
-0000c56a   GP_wr
-0000c564   GP_wr16
-0000c570   GP_xhide
+0000c31a   GP_ascii
+0000c1c2   GP_begin
+0000c5bc   GP_fill
+0000c594   GP_putstr
+0000c6f2   GP_setpal
+0000c3a4   GP_sprite
+0000c658   GP_wr
+0000c5de   GP_wr16
+0000c600   GP_xhide
 00000000   IE1
 00000001   IE2
 00000002   IFG1
@@ -223,73 +227,78 @@ address    name
 00000120   WDTCTL
 00000400   __STACK_END
 00000050   __STACK_SIZE
-0000c8fa   __TI_CINIT_Base
-0000c8fe   __TI_CINIT_Limit
-0000c8f6   __TI_Handler_Table_Base
-0000c8fa   __TI_Handler_Table_Limit
+0000ca8e   __TI_CINIT_Base
+0000ca92   __TI_CINIT_Limit
+0000ca8a   __TI_Handler_Table_Base
+0000ca8e   __TI_Handler_Table_Limit
 00000001   __TI_args_main
-0000c50a   __TI_decompress_none
-0000c576   __TI_decompress_rle24
+0000c6ae   __TI_decompress_none
+0000c70e   __TI_decompress_rle24
 00000001   __TI_exit
 ffffffff   __binit__
 ffffffff   __c_args__
-0000c54a   __mspabi_func_epilog_1
-0000c548   __mspabi_func_epilog_2
-0000c546   __mspabi_func_epilog_3
-0000c544   __mspabi_func_epilog_4
-0000c542   __mspabi_func_epilog_5
-0000c540   __mspabi_func_epilog_6
-0000c53e   __mspabi_func_epilog_7
-0000c4e4   __mspabi_mpyi
-0000c454   __mspabi_slli
-0000c47c   __mspabi_slli_1
-0000c46a   __mspabi_slli_10
-0000c468   __mspabi_slli_11
-0000c466   __mspabi_slli_12
-0000c464   __mspabi_slli_13
-0000c462   __mspabi_slli_14
-0000c460   __mspabi_slli_15
-0000c47a   __mspabi_slli_2
-0000c478   __mspabi_slli_3
-0000c476   __mspabi_slli_4
-0000c474   __mspabi_slli_5
-0000c472   __mspabi_slli_6
-0000c470   __mspabi_slli_7
-0000c46e   __mspabi_slli_8
-0000c46c   __mspabi_slli_9
-0000c428   __mspabi_srai
-0000c450   __mspabi_srai_1
-0000c43e   __mspabi_srai_10
-0000c43c   __mspabi_srai_11
-0000c43a   __mspabi_srai_12
-0000c438   __mspabi_srai_13
-0000c436   __mspabi_srai_14
-0000c434   __mspabi_srai_15
-0000c44e   __mspabi_srai_2
-0000c44c   __mspabi_srai_3
-0000c44a   __mspabi_srai_4
-0000c448   __mspabi_srai_5
-0000c446   __mspabi_srai_6
-0000c444   __mspabi_srai_7
-0000c442   __mspabi_srai_8
-0000c440   __mspabi_srai_9
-0000c588   __start
-0000c55a   __wstart
-0000c38e   _auto_init
-0000c4ca   _c_int00
-0000c4ca   _c_int00_noexit
+0000c708   __end
+0000c6de   __mspabi_func_epilog_1
+0000c6dc   __mspabi_func_epilog_2
+0000c6da   __mspabi_func_epilog_3
+0000c6d8   __mspabi_func_epilog_4
+0000c6d6   __mspabi_func_epilog_5
+0000c6d4   __mspabi_func_epilog_6
+0000c6d2   __mspabi_func_epilog_7
+0000c69a   __mspabi_mpyi
+0000c53e   __mspabi_slli
+0000c566   __mspabi_slli_1
+0000c554   __mspabi_slli_10
+0000c552   __mspabi_slli_11
+0000c550   __mspabi_slli_12
+0000c54e   __mspabi_slli_13
+0000c54c   __mspabi_slli_14
+0000c54a   __mspabi_slli_15
+0000c564   __mspabi_slli_2
+0000c562   __mspabi_slli_3
+0000c560   __mspabi_slli_4
+0000c55e   __mspabi_slli_5
+0000c55c   __mspabi_slli_6
+0000c55a   __mspabi_slli_7
+0000c558   __mspabi_slli_8
+0000c556   __mspabi_slli_9
+0000c512   __mspabi_srai
+0000c53a   __mspabi_srai_1
+0000c528   __mspabi_srai_10
+0000c526   __mspabi_srai_11
+0000c524   __mspabi_srai_12
+0000c522   __mspabi_srai_13
+0000c520   __mspabi_srai_14
+0000c51e   __mspabi_srai_15
+0000c538   __mspabi_srai_2
+0000c536   __mspabi_srai_3
+0000c534   __mspabi_srai_4
+0000c532   __mspabi_srai_5
+0000c530   __mspabi_srai_6
+0000c52e   __mspabi_srai_7
+0000c52c   __mspabi_srai_8
+0000c52a   __mspabi_srai_9
+0000c622   __start
+0000c6fe   __wstart
+0000c46c   _auto_init
+0000c63e   _c_int00
+0000c63e   _c_int00_noexit
 0000fffe   _reset_vector
 000003b0   _stack
-0000c57c   _system_pre_init
-0000c580   abort
+0000c714   _system_pre_init
+0000c718   abort
 ffffffff   binit
-0000c58a   font8x8
-00000212   gp_cur_spr
+0000c66e   delay
+0000c71c   font8x8
+00000210   gp_cur_spr
 0000c000   main
-0000c51c   memcpy
-0000c584   random
-0000c3ec   random_color
-0000c480   spr
+0000c6c0   memcpy
+00000211   nes_data_1
+00000212   nes_data_2
+0000c684   random
+0000c4ca   random_color
+0000c6e2   spi_transfer
+0000c56a   spr
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -384,7 +393,9 @@ address    name
 000001b2   ADC10CTL1
 000001b4   ADC10MEM
 000001bc   ADC10SA
-00000212   gp_cur_spr
+00000210   gp_cur_spr
+00000211   nes_data_1
+00000212   nes_data_2
 000003b0   _stack
 00000400   __STACK_END
 000010f8   CALDCO_16MHZ
@@ -396,77 +407,80 @@ address    name
 000010fe   CALDCO_1MHZ
 000010ff   CALBC1_1MHZ
 0000c000   main
-0000c1c6   GP_begin
-0000c2a6   GP_ascii
-0000c38e   _auto_init
-0000c3ec   random_color
-0000c428   __mspabi_srai
-0000c434   __mspabi_srai_15
-0000c436   __mspabi_srai_14
-0000c438   __mspabi_srai_13
-0000c43a   __mspabi_srai_12
-0000c43c   __mspabi_srai_11
-0000c43e   __mspabi_srai_10
-0000c440   __mspabi_srai_9
-0000c442   __mspabi_srai_8
-0000c444   __mspabi_srai_7
-0000c446   __mspabi_srai_6
-0000c448   __mspabi_srai_5
-0000c44a   __mspabi_srai_4
-0000c44c   __mspabi_srai_3
-0000c44e   __mspabi_srai_2
-0000c450   __mspabi_srai_1
-0000c454   __mspabi_slli
-0000c460   __mspabi_slli_15
-0000c462   __mspabi_slli_14
-0000c464   __mspabi_slli_13
-0000c466   __mspabi_slli_12
-0000c468   __mspabi_slli_11
-0000c46a   __mspabi_slli_10
-0000c46c   __mspabi_slli_9
-0000c46e   __mspabi_slli_8
-0000c470   __mspabi_slli_7
-0000c472   __mspabi_slli_6
-0000c474   __mspabi_slli_5
-0000c476   __mspabi_slli_4
-0000c478   __mspabi_slli_3
-0000c47a   __mspabi_slli_2
-0000c47c   __mspabi_slli_1
-0000c480   spr
-0000c4aa   GP_putstr
-0000c4ca   _c_int00
-0000c4ca   _c_int00_noexit
-0000c4e4   __mspabi_mpyi
-0000c4f8   GP_sprite
-0000c50a   __TI_decompress_none
-0000c51c   memcpy
-0000c52e   GP_fill
-0000c53e   __mspabi_func_epilog_7
-0000c540   __mspabi_func_epilog_6
-0000c542   __mspabi_func_epilog_5
-0000c544   __mspabi_func_epilog_4
-0000c546   __mspabi_func_epilog_3
-0000c548   __mspabi_func_epilog_2
-0000c54a   __mspabi_func_epilog_1
-0000c54e   GP_setpal
-0000c55a   __wstart
-0000c564   GP_wr16
-0000c56a   GP_wr
-0000c570   GP_xhide
-0000c576   __TI_decompress_rle24
-0000c57c   _system_pre_init
-0000c580   C$$EXIT
-0000c580   abort
-0000c584   random
-0000c588   __start
-0000c58a   font8x8
-0000c8f6   __TI_Handler_Table_Base
-0000c8fa   __TI_CINIT_Base
-0000c8fa   __TI_Handler_Table_Limit
-0000c8fe   __TI_CINIT_Limit
+0000c1c2   GP_begin
+0000c31a   GP_ascii
+0000c3a4   GP_sprite
+0000c46c   _auto_init
+0000c4ca   random_color
+0000c512   __mspabi_srai
+0000c51e   __mspabi_srai_15
+0000c520   __mspabi_srai_14
+0000c522   __mspabi_srai_13
+0000c524   __mspabi_srai_12
+0000c526   __mspabi_srai_11
+0000c528   __mspabi_srai_10
+0000c52a   __mspabi_srai_9
+0000c52c   __mspabi_srai_8
+0000c52e   __mspabi_srai_7
+0000c530   __mspabi_srai_6
+0000c532   __mspabi_srai_5
+0000c534   __mspabi_srai_4
+0000c536   __mspabi_srai_3
+0000c538   __mspabi_srai_2
+0000c53a   __mspabi_srai_1
+0000c53e   __mspabi_slli
+0000c54a   __mspabi_slli_15
+0000c54c   __mspabi_slli_14
+0000c54e   __mspabi_slli_13
+0000c550   __mspabi_slli_12
+0000c552   __mspabi_slli_11
+0000c554   __mspabi_slli_10
+0000c556   __mspabi_slli_9
+0000c558   __mspabi_slli_8
+0000c55a   __mspabi_slli_7
+0000c55c   __mspabi_slli_6
+0000c55e   __mspabi_slli_5
+0000c560   __mspabi_slli_4
+0000c562   __mspabi_slli_3
+0000c564   __mspabi_slli_2
+0000c566   __mspabi_slli_1
+0000c56a   spr
+0000c594   GP_putstr
+0000c5bc   GP_fill
+0000c5de   GP_wr16
+0000c600   GP_xhide
+0000c622   __start
+0000c63e   _c_int00
+0000c63e   _c_int00_noexit
+0000c658   GP_wr
+0000c66e   delay
+0000c684   random
+0000c69a   __mspabi_mpyi
+0000c6ae   __TI_decompress_none
+0000c6c0   memcpy
+0000c6d2   __mspabi_func_epilog_7
+0000c6d4   __mspabi_func_epilog_6
+0000c6d6   __mspabi_func_epilog_5
+0000c6d8   __mspabi_func_epilog_4
+0000c6da   __mspabi_func_epilog_3
+0000c6dc   __mspabi_func_epilog_2
+0000c6de   __mspabi_func_epilog_1
+0000c6e2   spi_transfer
+0000c6f2   GP_setpal
+0000c6fe   __wstart
+0000c708   __end
+0000c70e   __TI_decompress_rle24
+0000c714   _system_pre_init
+0000c718   C$$EXIT
+0000c718   abort
+0000c71c   font8x8
+0000ca8a   __TI_Handler_Table_Base
+0000ca8e   __TI_CINIT_Base
+0000ca8e   __TI_Handler_Table_Limit
+0000ca92   __TI_CINIT_Limit
 0000fffe   _reset_vector
 ffffffff   __binit__
 ffffffff   __c_args__
 ffffffff   binit
 
-[172 symbols]
+[177 symbols]
