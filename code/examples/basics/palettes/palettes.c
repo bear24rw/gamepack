@@ -8,17 +8,9 @@ void spr(uint16_t x, uint16_t y, uint8_t pal)
     GP_sprite(sprnum++, x, y, 0, pal, 0, 0);
 }
 
-uint8_t random(uint8_t range)
-{
-    static uint8_t x = 0;
-    x += 5;
-    if (x > range) x = 0;
-    return x;
-}
-
 uint16_t random_color(void)
 {
-  return RGB(64 + random(192), 64 + random(192), 64 + random(192));
+  return RGB(64 + random(0, 192), 64 + random(0, 192), 64 + random(0, 192));
 }
 
 int main(void)
