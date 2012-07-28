@@ -428,8 +428,8 @@ int main(void)
 		{
 			if (bullet_array[bulletnum].draw == 1) //not being drawn
 					{
-						bullet_array[bulletnum].bullet_x = ship_x;
-						bullet_array[bulletnum].bullet_y = SHIP_Y;
+						bullet_array[bulletnum].bullet_x = ship_x-8;
+						bullet_array[bulletnum].bullet_y = SHIP_Y-16;
 						bullet_array[bulletnum].draw = 0;
 						bulletnum++;
 						bulletend++;
