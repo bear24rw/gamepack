@@ -6,17 +6,33 @@
 
 #define BULLET_SPRITE   8
 #define BULLET_SPEED    3
-#define NUMBER_OF_BULLETS	25
+#define NUMBER_OF_BULLETS	1
+#define EXPLOSION_DURATION	20
 
 #define BOULDER_Y		32*7
+#define BOULDER_WIDTH	38
+#define BOULDER_HEIGHT	16
 
 #define ALIEN_A         0
 #define ALIEN_B         1
 #define ALIEN_C         2
+#define DANCETIME		30
 
 #define SHIP_Y        32*8+16 // pixel location of top of ship
 #define SHIP_SPEED    5       // pixels per gameloop
 
+int _system_pre_init(void)
+    {
+    /* Insert your low-level initializations here */
+    WDTCTL = WDTPW + WDTHOLD; // Stop Watchdog timer
+    /*==================================*/
+    /* Choose if segment initialization */
+    /* should be done or not. */
+    /* Return: 0 to omit initialization */
+    /* 1 to run initialization */
+    /*==================================*/
+    return (1);
+    }
 
 // x y values are top left of alien
 void draw_alien(uint8_t alien, uint16_t x, uint16_t y, uint8_t anim)
@@ -58,11 +74,11 @@ void draw_ship(uint16_t x, uint16_t y)
     draw_sprite(x, y, 5, 0, 0);
 }
 
-// x,y is the center of explosion
+// x is left side, y is the center of explosion
 void draw_explosion(uint16_t x, uint16_t y)
 {
-	draw_sprite(x-16, y, 14, 0, 0);
-	draw_sprite(x, y, 11, 0, 0);
+	draw_sprite(x, y, 14, 0, 0);
+	draw_sprite(x+16, y, 11, 0, 0);
 }
 
 
@@ -70,31 +86,40 @@ int main(void)
 {
 	uint16_t ship_x = 26;
 	uint8_t paused = 1;
-	//uint16_t bullet_x;
-	//uint16_t bullet_y;
+
+	int dance = 0;
+
 
 	typedef struct {
 		int bullet_x;
 		int bullet_y;
-		int draw;
+		char draw;
 	} bullet;
 	bullet bullet_array[NUMBER_OF_BULLETS] = {0,0,0};
 
 	typedef struct {
 		int alien_x;
 		int alien_y;
-		int killed;
-	}aliens;
-	aliens grid[5][9] = {0,0,0};
+		char explode;
+		char killed;
+		char anim;
+	} aliens;
+	aliens grid[5][9] = {0,0,0,0,0};
 
-	unsigned int col;
-	unsigned int row;
-	unsigned int toRight = 1;
+	typedef struct {
+		int x;
+		char damage;
+	} boulder;
+	boulder boulders[4] = {0,0};
+
+	unsigned char col;
+	unsigned char row;
+	unsigned char toRight = 1;
 	unsigned int mvt = 0;
 	unsigned int down = 0;
 	unsigned int speed = 0;
 	unsigned int bulletnum = 0;
-	unsigned int pressA = 0;
+	unsigned char pressA = 0;
 	unsigned int bulletstart = 0;
 	unsigned int bulletend = 0;
 	unsigned int win = 0;
@@ -123,6 +148,16 @@ int main(void)
 
     __end();
 
+	// initialize animation orientation
+	for (col = 0; col < 9; col++)
+	{
+		grid[0][col].anim = 0;
+		grid[1][col].anim = 0;
+		grid[2][col].anim = 0;
+		grid[3][col].anim = 1;
+		grid[4][col].anim = 1;
+	}
+
     while (1) {
 
         GP_waitvblank();
@@ -140,52 +175,92 @@ int main(void)
 	//                      GRID OF ALIENS
 	// ********************************************************************
 
+
 	if (paused == 0)
 		{
 
+		dance++;
+		if (dance % DANCETIME== 0)
+		{
+			for (col = 0; col < 9; col++)
+			{
+				grid[0][col].anim = grid[0][col].anim ^ 1;
+				grid[1][col].anim = grid[1][col].anim ^ 1;
+				grid[2][col].anim = grid[2][col].anim ^ 1;
+				grid[3][col].anim = grid[3][col].anim ^ 1;
+				grid[4][col].anim = grid[4][col].anim ^ 1;
+			}
+
+		}
+
 		for (col = 0; col<9; col++)			// top row
 		{
+			grid[0][col].alien_x = col*32 + mvt;
+			grid[0][col].alien_y = 32*0 + down*16;
 			if (grid[0][col].killed == 0) //if it has not been hit
 			{
-				grid[0][col].alien_x = col*32 + mvt;
-				grid[0][col].alien_y = 32*0 + down*16;
-				draw_alien(ALIEN_A, grid[0][col].alien_x, grid[0][col].alien_y, 0);
+				draw_alien(ALIEN_A, grid[0][col].alien_x, grid[0][col].alien_y, grid[0][col].anim);
+			}
+			else if (grid[0][col].explode != 0)
+			{
+				draw_explosion(grid[0][col].alien_x,grid[0][col].alien_y);
+				grid[0][col].explode--;
 			}
 		}
 		for (col = 0; col<9; col++)
 		{
+			grid[1][col].alien_x = col*32 + mvt;
+			grid[1][col].alien_y = 32*1 + down*16;
 			if (grid[1][col].killed == 0)
 			{
-				grid[1][col].alien_x = col*32 + mvt;
-				grid[1][col].alien_y = 32*1 + down*16;
-				draw_alien(ALIEN_B, grid[1][col].alien_x, grid[1][col].alien_y, 0);
+				draw_alien(ALIEN_B, grid[1][col].alien_x, grid[1][col].alien_y, grid[1][col].anim);
+			}
+			else if (grid[1][col].explode != 0)
+			{
+				draw_explosion(grid[1][col].alien_x,grid[1][col].alien_y);
+				grid[1][col].explode--;
 			}
 		}
 		for (col = 0; col<9; col++)
 		{
+			grid[2][col].alien_x = col*32 + mvt;
+			grid[2][col].alien_y = 32*2 + down*16;
 			if (grid[2][col].killed == 0)
 			{
-				grid[2][col].alien_x = col*32 + mvt;
-				grid[2][col].alien_y = 32*2 + down*16;
-				draw_alien(ALIEN_C, grid[2][col].alien_x, grid[2][col].alien_y, 0);
+				draw_alien(ALIEN_C, grid[2][col].alien_x, grid[2][col].alien_y, grid[2][col].anim);
+			}
+			else if (grid[2][col].explode != 0)
+			{
+				draw_explosion(grid[2][col].alien_x,grid[2][col].alien_y);
+				grid[2][col].explode--;
 			}
 		}
 		for (col = 0; col<9; col++)
 		{
+			grid[3][col].alien_x = col*32 + mvt;
+			grid[3][col].alien_y = 32*3 + down*16;
 			if (grid[3][col].killed == 0)
 			{
-				grid[3][col].alien_x = col*32 + mvt;
-				grid[3][col].alien_y = 32*3 + down*16;
-				draw_alien(ALIEN_B, grid[3][col].alien_x, grid[3][col].alien_y, 1);
+				draw_alien(ALIEN_B, grid[3][col].alien_x, grid[3][col].alien_y, grid[3][col].anim);
+			}
+			else if (grid[3][col].explode != 0)
+			{
+				draw_explosion(grid[3][col].alien_x,grid[3][col].alien_y);
+				grid[3][col].explode--;
 			}
 		}
 		for (col = 0; col<9; col++)
 		{
+			grid[4][col].alien_x = col*32 + mvt;
+			grid[4][col].alien_y = 32*4 + down*16;
 			if (grid[4][col].killed == 0)
 			{
-				grid[4][col].alien_x = col*32 + mvt;
-				grid[4][col].alien_y = 32*4 + down*16;
-				draw_alien(ALIEN_C, grid[4][col].alien_x, grid[4][col].alien_y, 1);
+				draw_alien(ALIEN_C, grid[4][col].alien_x, grid[4][col].alien_y, grid[4][col].anim);
+			}
+			else if (grid[4][col].explode != 0)
+			{
+				draw_explosion(grid[4][col].alien_x,grid[4][col].alien_y);
+				grid[4][col].explode--;
 			}
 		}
 
@@ -224,7 +299,8 @@ int main(void)
 	unsigned int i;
 	for (i = 0; i < 4; i++)
 	{
-		draw_brick(26+96*i, BOULDER_Y, 0);
+		boulders[i].x = 26+96*i;
+		draw_brick(boulders[i].x, BOULDER_Y, boulders[i].damage);
 	}
 
 	draw_ship(ship_x, SHIP_Y);
@@ -243,34 +319,67 @@ int main(void)
 				{
 					draw_sprite(bullet_array[k].bullet_x, bullet_array[k].bullet_y,8,0,0);
 					bullet_array[k].bullet_y -= BULLET_SPEED;
-					if (bullet_array[k].bullet_y < 2) //maybe 0
-					{
-						bullet_array[k].draw = 1; //don't draw anymore
-					}
-
-					//if hit alien, remove both from drawing:
-					//for each column. case statement using bullet_x
-					for (col = 0; col<9; col++)
-					{
-						//for each row
-						for (row = 0; row < 5; row++)
+					//if the bullet hits a boulder
+					//if (   )
+					//{
+						for (col = 0; col < 4; col++)
 						{
-							//if bullet is within x bounds
-							if (bullet_array[k].bullet_x > grid[row][col].alien_x && bullet_array[k].bullet_x < grid[row][col].alien_x + 14)
+							if (bullet_array[k].bullet_x > boulders[col].x && bullet_array[k].bullet_x < boulders[col].x + BOULDER_WIDTH && boulders[col].damage < 5)
 							{
-								//if it is also at the y coordinate
-								if (bullet_array[k].bullet_y <= grid[row][col].alien_y)
+								if (bullet_array[k].bullet_y <= BOULDER_Y + BOULDER_HEIGHT)
 								{
-									//remove the alien
-									if (grid[row][col].killed == 0 && bullet_array[k].draw == 0) //if still alive and bullet exists... kill!
+									if (boulders[col].damage < 5)
 									{
-										grid[row][col].killed = 1;
+										boulders[col].damage++;
 										bullet_array[k].draw = 1; //don't draw anymore
+									}
+//									else //game over!
+//									{
+//										end = 1;
+//										//game over needs to be fixed
+//									}
+								}
+							}
+						}
+
+
+
+					//}
+
+
+					//else
+					//{
+						// if the bullet reaches the top of the screen
+						if (bullet_array[k].bullet_y < 2) //maybe 0
+						{
+							bullet_array[k].draw = 1; //don't draw anymore
+						}
+
+						//if hit alien, remove both from drawing:
+						//for each column. case statement using bullet_x
+						for (col = 0; col<9; col++)
+						{
+							//for each row
+							for (row = 0; row < 5; row++)
+							{
+								//if bullet is within x bounds
+								if (bullet_array[k].bullet_x > grid[row][col].alien_x && bullet_array[k].bullet_x < grid[row][col].alien_x + 14)
+								{
+									//if it is also at the y coordinate
+									if (bullet_array[k].bullet_y <= grid[row][col].alien_y)
+									{
+										//remove the alien
+										if (grid[row][col].killed == 0 && bullet_array[k].draw == 0) //if still alive and bullet exists... kill!
+										{
+											grid[row][col].killed = 1;
+											grid[row][col].explode = EXPLOSION_DURATION;
+											bullet_array[k].draw = 1; //don't draw anymore
+										}
 									}
 								}
 							}
 						}
-					}
+					//}
 				}
 			}
 
@@ -374,7 +483,10 @@ int main(void)
 			{
 				grid[row][col].alien_x = 0;
 				grid[row][col].alien_y = 0;
+				grid[row][col].explode = 0;
 				grid[row][col].killed = 0;
+				grid[row][col].anim = 0;
+
 			}
 		}
 		for (k = 0; k < NUMBER_OF_BULLETS; k++)
