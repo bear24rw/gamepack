@@ -251,15 +251,9 @@ int main(void)
             refresh++;
             if (refresh % DANCETIME== 0)
             {
-                for (col = 0; col < 9; col++)
-                {
-                    grid[0][col].KilledAnim = grid[0][col].KilledAnim ^ 1;
-                    grid[1][col].KilledAnim = grid[1][col].KilledAnim ^ 1;
-                    grid[2][col].KilledAnim = grid[2][col].KilledAnim ^ 1;
-                    grid[3][col].KilledAnim = grid[3][col].KilledAnim ^ 1;
-                    grid[4][col].KilledAnim = grid[4][col].KilledAnim ^ 1;
-                }
-
+                for (row = 0; row < 5; row++)
+                    for (col = 0; col < 9; col++)
+                        grid[row][col].KilledAnim ^= 1;
             }
 
             for (row = 0; row<5; row++)
