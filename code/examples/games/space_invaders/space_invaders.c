@@ -460,12 +460,10 @@ int main(void)
             }
         }
 
-        //draw all bullets and move them up
         for (k = 0; k < NUMBER_OF_BULLETS; k++)
         {
             if (alien_bullet[k].draw == 0) continue;
 
-            draw_sprite(alien_bullet[k].bullet_x, alien_bullet[k].bullet_y,8,0,0);
             alien_bullet[k].bullet_y += ALIEN_BULLET_SPEED;
 
             for (col = 0; col < 4; col++)
