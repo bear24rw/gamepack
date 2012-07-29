@@ -312,59 +312,64 @@ int main(void)
 
         for (k = 0; k < NUMBER_OF_BULLETS; k++)
         {
-            if (bullet_array[k].draw == 1) //draw
-            {
-                draw_sprite(bullet_array[k].bullet_x, bullet_array[k].bullet_y,8,0,0);
-                bullet_array[k].bullet_y -= BULLET_SPEED;
-                for (col = 0; col < 4; col++)
-                {
-                    if (bullet_array[k].bullet_x > boulders[col].x && bullet_array[k].bullet_x < boulders[col].x + BOULDER_WIDTH && boulders[col].damage < 5)
-                    {
-                        if (bullet_array[k].bullet_y <= BOULDER_Y + BOULDER_HEIGHT)
-                        {
-                            if (boulders[col].damage < 5)
-                            {
-                                boulders[col].damage++;
-                                bullet_array[k].draw = 0; //don't draw anymore
-                            }
-                        }
-                    }
-                }
+            if (bullet_array[k].draw == 0) continue;
 
-                // if the bullet reaches the top of the screen
-                if (bullet_array[k].bullet_y < 2) //maybe 0
+            draw_sprite(bullet_array[k].bullet_x, bullet_array[k].bullet_y,8,0,0);
+            bullet_array[k].bullet_y -= BULLET_SPEED;
+
+            //
+            // BOULDERS
+            //
+            for (col = 0; col < 4; col++)
+            {
+                // if boulder is already fully damaged skip it
+                if (boulders[col].damage == 5) continue;
+
+                // if the bullet is within x y bounds of bounder
+                if (bullet_array[k].bullet_x > boulders[col].x &&
+                    bullet_array[k].bullet_x < boulders[col].x + BOULDER_WIDTH &&
+                    bullet_array[k].bullet_y <= BOULDER_Y + BOULDER_HEIGHT)
                 {
+                    boulders[col].damage++;
                     bullet_array[k].draw = 0; //don't draw anymore
                 }
+            }
 
-                //if hit alien, remove both from drawing:
-                //for each column. case statement using bullet_x
-                for (col = 0; col<9; col++)
+            //
+            // TOP OF SCREEN
+            //
+            if (bullet_array[k].bullet_y < 2) //maybe 0
+            {
+                bullet_array[k].draw = 0; //don't draw anymore
+            }
+
+            //
+            // ALIENS
+            //
+            for (col = 0; col<9; col++)
+            {
+                for (row = 0; row < 5; row++)
                 {
-                    //for each row
-                    for (row = 0; row < 5; row++)
+                    // if alien isn't alive, skip
+                    if(grid[row][col].KilledAnim && KILLED) continue;
+
+                    // if bullet already hit something, skip
+                    if (bullet_array[k].draw == 0) continue;
+
+                    // if bullet is within x y bounds of alien
+                    if (bullet_array[k].bullet_x + 5 + 6 > grid[row][col].alien_x + 4 &&        // right side of bullet with left size of alien
+                        bullet_array[k].bullet_x + 5 + 0 < grid[row][col].alien_x + 32 - 4  &&  // left side of bullet with right side of alien
+                        bullet_array[k].bullet_y + 4 <= grid[row][col].alien_y + 16)
                     {
-                        //if bullet is within x bounds
-                        if (bullet_array[k].bullet_x > grid[row][col].alien_x && bullet_array[k].bullet_x < grid[row][col].alien_x + 14)
-                        {
-                            //if it is also at the y coordinate
-                            if (bullet_array[k].bullet_y <= grid[row][col].alien_y)
-                            {
-                                //remove the alien
-                                if ((grid[row][col].KilledAnim & KILLED) == 0 && bullet_array[k].draw == 1) //if still alive and bullet exists... kill!
-                                {
-                                    grid[row][col].KilledAnim |= KILLED;
-                                    grid[row][col].explode = EXPLOSION_DURATION;
-                                    bullet_array[k].draw = 0; //don't draw anymore
-                                    score += 10;
-                                }
-                            }
-                        }
+                        grid[row][col].KilledAnim |= KILLED;
+                        grid[row][col].explode = EXPLOSION_DURATION;
+                        bullet_array[k].draw = 0; //don't draw anymore
+                        score += 10;
                     }
                 }
             }
-        }
 
+        }
 
 
         // ********************************************************************
@@ -395,49 +400,40 @@ int main(void)
         }
 
         //draw all bullets and move them up
-
         for (k = 0; k < NUMBER_OF_BULLETS; k++)
         {
-            if (bullet_aliens[k].draw == 1) //draw
+            if (bullet_aliens[k].draw == 0) continue;
+
+            draw_sprite(bullet_aliens[k].bullet_x, bullet_aliens[k].bullet_y,8,0,0);
+            bullet_aliens[k].bullet_y += ALIEN_BULLET_SPEED;
+
+            for (col = 0; col < 4; col++)
             {
-                draw_sprite(bullet_aliens[k].bullet_x, bullet_aliens[k].bullet_y,8,0,0);
-                bullet_aliens[k].bullet_y += ALIEN_BULLET_SPEED;
-                for (col = 0; col < 4; col++)
+                if (bullet_aliens[k].bullet_x > boulders[col].x &&                  // bullet is to the right of the boulder
+                        bullet_aliens[k].bullet_x < boulders[col].x + BOULDER_WIDTH &&  // bullet is to the left of the boulder
+                        bullet_aliens[k].bullet_y + 16 >= BOULDER_Y &&                  // bullet is  inside boulder from the top
+                        boulders[col].damage < 5)                                       // can the boulder take more damage?
                 {
-                    if (bullet_aliens[k].bullet_x > boulders[col].x && bullet_aliens[k].bullet_x < boulders[col].x + BOULDER_WIDTH && boulders[col].damage < 5)
-                    {
-                        if (bullet_aliens[k].bullet_y + 16 >= BOULDER_Y)
-                        {
-                            if (boulders[col].damage < 5)
-                            {
-                                boulders[col].damage++;
-                                bullet_aliens[k].draw = 0; //don't draw anymore
-                            }
-                        }
-                    }
+                    boulders[col].damage++;         // increase boulder damage
+                    bullet_aliens[k].draw = 0;      // dont draw bullet anymore since it just his the boulder
                 }
-
-                // if the bullet reaches the bottom of the screen
-                if (bullet_aliens[k].bullet_y > 280)
-                {
-                    bullet_aliens[k].draw = 0; //don't draw anymore
-                }
-
-                // if the bullet hits a boulder or kills the guy, do stuff
-                if ((bullet_aliens[k].bullet_x > ship_x - 16) && (bullet_aliens[k].bullet_x < ship_x + 16))
-                {
-                    if (bullet_aliens[k].bullet_y + 16 > SHIP_Y)
-                    {
-                        lives--;
-                        bullet_aliens[k].draw = 0; //don't draw anymore
-                    }
-                }
-
             }
 
+            // if the bullet reaches the bottom of the screen
+            if (bullet_aliens[k].bullet_y > 280)
+            {
+                bullet_aliens[k].draw = 0; //don't draw anymore
+            }
+
+            // if the bullet hits a boulder or kills the guy, do stuff
+            if ((bullet_aliens[k].bullet_x > ship_x - 16) && 
+                    (bullet_aliens[k].bullet_x < ship_x + 16) &&
+                    (bullet_aliens[k].bullet_y + 16 > SHIP_Y))
+            {
+                lives--;
+                bullet_aliens[k].draw = 0; //don't draw anymore
+            }
         }
-
-
 
 
 
