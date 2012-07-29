@@ -412,7 +412,7 @@ int main(void)
                 for (row = 0; row < 5; row++)
                 {
                     // if alien isn't alive, skip
-                    if(grid[row][col].KilledAnim && KILLED) continue;
+                    if(grid[row][col].KilledAnim & KILLED) continue;
 
                     // if bullet already hit something, skip
                     if (ship_bullet[k].draw == 0) continue;
