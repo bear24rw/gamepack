@@ -11,8 +11,8 @@
 #define EXPLOSION_DURATION  20
 
 #define BOULDER_Y       32*7 + 8
-#define BOULDER_WIDTH   38
-#define BOULDER_HEIGHT  16
+#define BOULDER_WIDTH   16*3
+#define BOULDER_HEIGHT  16*2
 
 #define ALIEN_A         0
 #define ALIEN_B         1
@@ -141,7 +141,7 @@ void reset_boulders(void)
 
 int main(void)
 {
-    uint16_t i = 0;
+    int16_t i = 0;
 
     uint16_t ship_x = 26;
     uint8_t paused = 1;
@@ -387,9 +387,9 @@ int main(void)
                 if (boulders[col].damage == 5) continue;
 
                 // if the bullet is within x y bounds of bounder
-                if (ship_bullet[k].bullet_x > boulders[col].x &&
-                    ship_bullet[k].bullet_x < boulders[col].x + BOULDER_WIDTH &&
-                    ship_bullet[k].bullet_y <= BOULDER_Y + BOULDER_HEIGHT)
+                if (ship_bullet[k].bullet_x + 5 + 6 > boulders[col].x &&
+                    ship_bullet[k].bullet_x + 5 + 0 < boulders[col].x + BOULDER_WIDTH &&
+                    ship_bullet[k].bullet_y + 4 <= BOULDER_Y + BOULDER_HEIGHT)
                 {
                     boulders[col].damage++;
                     ship_bullet[k].draw = 0; //don't draw anymore
@@ -466,27 +466,38 @@ int main(void)
 
             alien_bullet[k].bullet_y += ALIEN_BULLET_SPEED;
 
+            //
+            // BOULDERS
+            //
+
             for (col = 0; col < 4; col++)
             {
-                if (alien_bullet[k].bullet_x > boulders[col].x &&                   // bullet is to the right of the boulder
-                    alien_bullet[k].bullet_x < boulders[col].x + BOULDER_WIDTH &&   // bullet is to the left of the boulder
-                    alien_bullet[k].bullet_y + 16 >= BOULDER_Y &&                   // bullet is  inside boulder from the top
-                    boulders[col].damage < 5)                                       // can the boulder take more damage?
+                // if boulder is already fully damaged skip it
+                if (boulders[col].damage == 5) continue;
+
+                // if the bullet is within x y bounds of bounder
+                if (alien_bullet[k].bullet_x + 5 + 6 > boulders[col].x &&                   // bullet is to the right of the boulder
+                    alien_bullet[k].bullet_x + 5 + 0 < boulders[col].x + BOULDER_WIDTH &&   // bullet is to the left of the boulder
+                    alien_bullet[k].bullet_y + 16 >= BOULDER_Y)                             // bullet is  inside boulder from the top
                 {
                     boulders[col].damage++;     // increase boulder damage
                     alien_bullet[k].draw = 0;   // dont draw bullet anymore since it just his the boulder
                 }
             }
 
-            // if the bullet reaches the bottom of the screen
+            //
+            // BOTOM OF SCREEN
+            //
             if (alien_bullet[k].bullet_y > 280)
             {
                 alien_bullet[k].draw = 0; //don't draw anymore
             }
 
-            // if the bullet hits a boulder or kills the guy, do stuff
-            if ((alien_bullet[k].bullet_x > ship_x - 16) && 
-                (alien_bullet[k].bullet_x < ship_x + 16) &&
+            //
+            // SHIP
+            //
+            if ((alien_bullet[k].bullet_x + 5 + 6 > ship_x - 16 + 2) && 
+                (alien_bullet[k].bullet_x + 5 + 0 < ship_x + 16 - 2) &&
                 (alien_bullet[k].bullet_y + 16 > SHIP_Y))
             {
                 lives--;
