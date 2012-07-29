@@ -5,11 +5,11 @@
 #include "header.h"
 
 #define BULLET_SPRITE   8
-#define BULLET_SPEED    3
-#define NUMBER_OF_BULLETS	1
+#define BULLET_SPEED    5
+#define NUMBER_OF_BULLETS	5
 #define EXPLOSION_DURATION	20
 
-#define BOULDER_Y		32*7
+#define BOULDER_Y		32*7 + 8
 #define BOULDER_WIDTH	38
 #define BOULDER_HEIGHT	16
 
@@ -18,7 +18,7 @@
 #define ALIEN_C         2
 #define DANCETIME		30
 
-#define SHIP_Y        32*8+16 // pixel location of top of ship
+#define SHIP_Y        32*8+16 + 8 // pixel location of top of ship
 #define SHIP_SPEED    5       // pixels per gameloop
 
 int _system_pre_init(void)
@@ -125,6 +125,9 @@ int main(void)
 	unsigned int win = 0;
 	unsigned int end = 0;
 	unsigned int k;
+	unsigned int high_score = 0;
+	unsigned int score = 0;
+	unsigned char lives = 3;
 
 
     // initialize the gamepack
@@ -164,9 +167,38 @@ int main(void)
 
         GP_nes_read();
 
+//        if (GP_player_1(NES_START))
+//			{
+//        		paused = 0;
+//			}
+
+        if (paused)
+        {
+            if (GP_player_1(NES_START))
+            {
+                paused = 0;
+                GP_putstr(20, 7, "         ");
+            }
+
+            continue;
+        }
+
 	// ********************************************************************
 	//                         DRAWING
 	// ********************************************************************
+
+        GP_putstr(1, 1, "HI-SCORE:");
+        GP_putnum(11, 1, (high_score / 100) % 10);   // hundred
+        GP_putnum(12, 1, (high_score / 10) % 10);    // ten
+        GP_putnum(13, 1, (high_score / 1) % 10);     // one
+
+        GP_putstr(17, 1, "SCORE:");
+        GP_putnum(24, 1, (score / 100) % 10);   // hundred
+        GP_putnum(25, 1, (score / 10) % 10);    // ten
+        GP_putnum(26, 1, (score / 1) % 10);     // one
+
+        GP_putstr(30, 1, "LIVES:");
+
 
 	// reset the sprite counter to 0
 	__wstartspr(0);
@@ -174,6 +206,19 @@ int main(void)
 	// ********************************************************************
 	//                      GRID OF ALIENS
 	// ********************************************************************
+
+	if (lives > 0)
+	{
+		draw_ship(310,1);
+	}
+	if (lives > 1)
+	{
+		draw_ship(340,1);
+	}
+	if (lives > 2)
+	{
+		draw_ship(370,1);
+	}
 
 
 	if (paused == 0)
@@ -196,7 +241,7 @@ int main(void)
 		for (col = 0; col<9; col++)			// top row
 		{
 			grid[0][col].alien_x = col*32 + mvt;
-			grid[0][col].alien_y = 32*0 + down*16;
+			grid[0][col].alien_y = 20 + 32*0 + down*16;
 			if (grid[0][col].killed == 0) //if it has not been hit
 			{
 				draw_alien(ALIEN_A, grid[0][col].alien_x, grid[0][col].alien_y, grid[0][col].anim);
@@ -210,7 +255,7 @@ int main(void)
 		for (col = 0; col<9; col++)
 		{
 			grid[1][col].alien_x = col*32 + mvt;
-			grid[1][col].alien_y = 32*1 + down*16;
+			grid[1][col].alien_y = 20 + 32*1 + down*16;
 			if (grid[1][col].killed == 0)
 			{
 				draw_alien(ALIEN_B, grid[1][col].alien_x, grid[1][col].alien_y, grid[1][col].anim);
@@ -224,7 +269,7 @@ int main(void)
 		for (col = 0; col<9; col++)
 		{
 			grid[2][col].alien_x = col*32 + mvt;
-			grid[2][col].alien_y = 32*2 + down*16;
+			grid[2][col].alien_y = 20 + 32*2 + down*16;
 			if (grid[2][col].killed == 0)
 			{
 				draw_alien(ALIEN_C, grid[2][col].alien_x, grid[2][col].alien_y, grid[2][col].anim);
@@ -238,7 +283,7 @@ int main(void)
 		for (col = 0; col<9; col++)
 		{
 			grid[3][col].alien_x = col*32 + mvt;
-			grid[3][col].alien_y = 32*3 + down*16;
+			grid[3][col].alien_y = 20 + 32*3 + down*16;
 			if (grid[3][col].killed == 0)
 			{
 				draw_alien(ALIEN_B, grid[3][col].alien_x, grid[3][col].alien_y, grid[3][col].anim);
@@ -252,7 +297,7 @@ int main(void)
 		for (col = 0; col<9; col++)
 		{
 			grid[4][col].alien_x = col*32 + mvt;
-			grid[4][col].alien_y = 32*4 + down*16;
+			grid[4][col].alien_y = 20 + 32*4 + down*16;
 			if (grid[4][col].killed == 0)
 			{
 				draw_alien(ALIEN_C, grid[4][col].alien_x, grid[4][col].alien_y, grid[4][col].anim);
@@ -374,6 +419,7 @@ int main(void)
 											grid[row][col].killed = 1;
 											grid[row][col].explode = EXPLOSION_DURATION;
 											bullet_array[k].draw = 1; //don't draw anymore
+											score += 10;
 										}
 									}
 								}
@@ -383,23 +429,18 @@ int main(void)
 				}
 			}
 
-
-
-	//if a bullet hits a boulder, it dies a little.
-
-
 	// hide the rest
 	while (gp_cur_spr < 255) { GP_xhide(); }
 
 	__end();
 
-    if (paused)
-    {
-        if (GP_player_1(NES_START))
-            paused = 0;
-
-        continue;
-    }
+//    if (paused)
+//    {
+//        if (GP_player_1(NES_START))
+//            paused = 0;
+//
+//        continue;
+//    }
 
     // ********************************************************************
 	//                           SHIP
@@ -448,9 +489,9 @@ int main(void)
 	{
 		for (row = 0; row < 5; row++)
 		{
-			if (grid[row][col].alien_y + 16 == BOULDER_Y)
+			if (grid[row][col].alien_y + 16 > BOULDER_Y && grid[row][col].killed == 0)
 			{
-				paused = 1;
+				//paused = 1;
 				GP_putstr(20, 7, "GAME OVER");
 				end = 1;
 			}
@@ -470,13 +511,20 @@ int main(void)
 	}
 	if (win == 45)
 	{
-		paused = 1;
+		//paused = 1;
 		GP_putstr(20, 7, "YOU WIN!");
 		end = 1;
 	}
 
 	if (end == 1)
 	{
+		paused = 1;
+
+		if (score > high_score)
+		{
+			high_score = score;
+		}
+
 		for (row = 0; row < 5; row ++)
 		{
 			for (col = 0; col < 9; col++)
@@ -496,6 +544,18 @@ int main(void)
 			bullet_array[k].draw = 0;
 		}
 
+		for (k = 0; k < 4; k++)
+		{
+			boulders[k].x = 0;
+			boulders[k].damage = 0;
+		}
+		dance = 0;
+		down = 0;
+		toRight = 1;
+		mvt = 0;
+		end = 0;
+		score = 0;
+
 
 	}
 
@@ -503,3 +563,7 @@ int main(void)
 
     return 0;
 }
+
+
+
+//need to implement lives-- when the ship gets hit by an alien
