@@ -158,8 +158,7 @@ int main(void)
     unsigned int speed = 0;
     unsigned int bulletnum = 0;
     unsigned char pressA = 0;
-    //unsigned int bulletstart = 0;
-    //unsigned int bulletend = 0;
+
     unsigned int win = 0;
     unsigned int end = 0;
     unsigned int k;
@@ -538,8 +537,6 @@ int main(void)
                     ship_bullet[bulletnum].bullet_x = ship_x-8;
                     ship_bullet[bulletnum].bullet_y = SHIP_Y-16;
                     ship_bullet[bulletnum].draw = 1;
-                    bulletnum++;
-                    //bulletend++;
                     break;
                 }
             }
