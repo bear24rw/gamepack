@@ -326,50 +326,45 @@ int main(void)
         //                       ALIEN MOVEMENT
         // ********************************************************************
 
-        if (paused == 0)
+        refresh++;
+        if (refresh % DANCETIME== 0)
         {
+            for (row = 0; row < 5; row++)
+                for (col = 0; col < 9; col++)
+                    grid[row][col].KilledAnim ^= 1;
+        }
 
-            refresh++;
-            if (refresh % DANCETIME== 0)
+        for (row = 0; row<5; row++)
+        {
+            for (col = 0; col<9; col++)
             {
-                for (row = 0; row < 5; row++)
-                    for (col = 0; col < 9; col++)
-                        grid[row][col].KilledAnim ^= 1;
+                grid[row][col].alien_x = col*32 + mvt;
+                grid[row][col].alien_y = 20 + 32*row + down*16;
             }
+        }
 
-            for (row = 0; row<5; row++)
-            {
-                for (col = 0; col<9; col++)
-                {
-                    grid[row][col].alien_x = col*32 + mvt;
-                    grid[row][col].alien_y = 20 + 32*row + down*16;
-                }
-            }
+        speed++;
 
-            speed++;
-
-            if (toRight == 1 && speed%2 == 0)
-            {
-                mvt++;
-                if (mvt == 110)
-                {
-                    mvt--;
-                    toRight = 0;
-                    //down++;
-                }
-            }
-
-            if (toRight == 0 && speed%2 == 0)
+        if (toRight == 1 && speed%2 == 0)
+        {
+            mvt++;
+            if (mvt == 110)
             {
                 mvt--;
-                if (mvt == 0)
-                {
-                    mvt++;
-                    toRight = 1;
-                    down++;
-                }
+                toRight = 0;
+                //down++;
             }
+        }
 
+        if (toRight == 0 && speed%2 == 0)
+        {
+            mvt--;
+            if (mvt == 0)
+            {
+                mvt++;
+                toRight = 1;
+                down++;
+            }
         }
 
 
