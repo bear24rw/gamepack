@@ -26,19 +26,6 @@
 #define KILLED      BIT1
 #define ANIM        BIT0
 
-int _system_pre_init(void)
-{
-    /* Insert your low-level initializations here */
-    WDTCTL = WDTPW + WDTHOLD; // Stop Watchdog timer
-    /*==================================*/
-    /* Choose if segment initialization */
-    /* should be done or not. */
-    /* Return: 0 to omit initialization */
-    /* 1 to run initialization */
-    /*==================================*/
-    return (1);
-}
-
 // x y values are top left of alien
 void draw_alien(uint8_t alien, uint16_t x, uint16_t y, uint8_t anim)
 {
