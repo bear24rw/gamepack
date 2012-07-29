@@ -10,21 +10,21 @@
 #define NUMBER_OF_BULLETS   5
 #define EXPLOSION_DURATION  20
 
-#define BOULDER_Y       32*7 + 8
-#define BOULDER_WIDTH   16*3
-#define BOULDER_HEIGHT  16*2
+#define BOULDER_Y           32*7 + 8
+#define BOULDER_WIDTH       16*3
+#define BOULDER_HEIGHT      16*2
 
-#define ALIEN_A         0
-#define ALIEN_B         1
-#define ALIEN_C         2
-#define DANCETIME       30
-#define TIMEALIENSHOOT  75
+#define ALIEN_A             0
+#define ALIEN_B             1
+#define ALIEN_C             2
+#define DANCETIME           30
+#define TIMEALIENSHOOT      75
 
-#define SHIP_Y      32*8+16 + 8 // pixel location of top of ship
-#define SHIP_SPEED  5       // pixels per gameloop
+#define SHIP_Y              32*8+16 + 8 // pixel location of top of ship
+#define SHIP_SPEED          5           // pixels per gameloop
 
-#define KILLED  BIT1
-#define ANIM    BIT0
+#define KILLED              BIT1
+#define ANIM                BIT0
 
 struct {
     int x;
