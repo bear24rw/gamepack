@@ -148,13 +148,6 @@ int main(void)
 
     int refresh = 0;
 
-
-
-
-    //uint16_t random
-
-
-
     uint8_t alien_row_lookup[] = {ALIEN_A, ALIEN_B, ALIEN_C, ALIEN_B, ALIEN_C};
 
     unsigned char col;
@@ -210,21 +203,7 @@ int main(void)
 
         GP_nes_read();
 
-        //        if (GP_player_1(NES_START))
-        //          {
-        //              paused = 0;
-        //          }
 
-        if (paused)
-        {
-            if (GP_player_1(NES_START))
-            {
-                paused = 0;
-                GP_putstr(20, 7, "         ");
-            }
-
-            continue;
-        }
 
         // ********************************************************************
         //                         DRAWING
@@ -319,6 +298,27 @@ int main(void)
             if (bullet_aliens[k].draw == 0) continue;
 
             draw_sprite(bullet_aliens[k].bullet_x, bullet_aliens[k].bullet_y,8,0,0);
+        }
+
+        // hide the rest
+        while (gp_cur_spr < 255) { GP_xhide(); }
+
+        __end();
+
+
+        // ********************************************************************
+        //                       PAUSED
+        // ********************************************************************
+
+        if (paused)
+        {
+            if (GP_player_1(NES_START))
+            {
+                paused = 0;
+                GP_putstr(20, 7, "         ");
+            }
+
+            continue;
         }
 
 
@@ -475,7 +475,7 @@ int main(void)
 
             for (col = 0; col < 4; col++)
             {
-                if (bullet_aliens[k].bullet_x > boulders[col].x &&                  // bullet is to the right of the boulder
+                if (bullet_aliens[k].bullet_x > boulders[col].x &&                      // bullet is to the right of the boulder
                         bullet_aliens[k].bullet_x < boulders[col].x + BOULDER_WIDTH &&  // bullet is to the left of the boulder
                         bullet_aliens[k].bullet_y + 16 >= BOULDER_Y &&                  // bullet is  inside boulder from the top
                         boulders[col].damage < 5)                                       // can the boulder take more damage?
@@ -501,13 +501,6 @@ int main(void)
             }
         }
 
-
-
-
-        // hide the rest
-        while (gp_cur_spr < 255) { GP_xhide(); }
-
-        __end();
 
 
 
@@ -546,8 +539,6 @@ int main(void)
                     break;
                 }
             }
-
-
         }
 
         // ********************************************************************
