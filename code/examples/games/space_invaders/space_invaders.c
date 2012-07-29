@@ -4,40 +4,49 @@
 
 #include "header.h"
 
-#define BULLET_SPRITE   8
-#define BULLET_SPEED    5
+#define BULLET_SPRITE       8
+#define BULLET_SPEED        5
 #define ALIEN_BULLET_SPEED  2
 #define NUMBER_OF_BULLETS   5
 #define EXPLOSION_DURATION  20
 
-#define BOULDER_Y       32*7 + 8
-#define BOULDER_WIDTH   38
-#define BOULDER_HEIGHT  16
+#define BOULDER_Y           32*7 + 8
+#define BOULDER_WIDTH       16*3
+#define BOULDER_HEIGHT      16*2
 
-#define ALIEN_A         0
-#define ALIEN_B         1
-#define ALIEN_C         2
-#define DANCETIME       30
-#define TIMEALIENSHOOT  75
+#define ALIEN_A             0
+#define ALIEN_B             1
+#define ALIEN_C             2
+#define DANCETIME           30
+#define TIMEALIENSHOOT      75
 
-#define SHIP_Y        32*8+16 + 8 // pixel location of top of ship
-#define SHIP_SPEED    5       // pixels per gameloop
+#define SHIP_Y              32*8+16 + 8 // pixel location of top of ship
+#define SHIP_SPEED          5           // pixels per gameloop
 
-#define KILLED      BIT1
-#define ANIM        BIT0
+#define KILLED              BIT1
+#define ANIM                BIT0
 
-int _system_pre_init(void)
-    {
-    /* Insert your low-level initializations here */
-    WDTCTL = WDTPW + WDTHOLD; // Stop Watchdog timer
-    /*==================================*/
-    /* Choose if segment initialization */
-    /* should be done or not. */
-    /* Return: 0 to omit initialization */
-    /* 1 to run initialization */
-    /*==================================*/
-    return (1);
-    }
+struct {
+    int x;
+    uint8_t damage;
+} boulders[4];
+
+struct {
+    int x;
+    int y;
+    uint8_t explode;
+    uint8_t KilledAnim;
+} alien[5][9];
+
+typedef struct {
+    int x;
+    int y;
+    uint8_t draw;
+} bullet;
+
+bullet ship_bullet[NUMBER_OF_BULLETS];
+bullet alien_bullet[NUMBER_OF_BULLETS];
+
 
 // x y values are top left of alien
 void draw_alien(uint8_t alien, uint16_t x, uint16_t y, uint8_t anim)
@@ -86,44 +95,61 @@ void draw_explosion(uint16_t x, uint16_t y)
     draw_sprite(x+16, y, 11, 0, 0);
 }
 
+void reset_aliens(void)
+{
+    uint8_t row = 0;
+    uint8_t col = 0;
+    for (row = 0; row < 5; row ++)
+    {
+        for (col = 0; col < 9; col++)
+        {
+            alien[row][col].x = col*32;
+            alien[row][col].y = 20 + 32*row;
+            alien[row][col].explode = 0;
+            alien[row][col].KilledAnim = 0;
+            alien[3][col].KilledAnim |= ANIM;
+            alien[4][col].KilledAnim |= ANIM;
+        }
+    }
+}
+
+void reset_bullets(void)
+{
+    uint8_t k = 0;
+    for (k = 0; k < NUMBER_OF_BULLETS; k++)
+    {
+        ship_bullet[k].x = 0;
+        ship_bullet[k].y = 0;
+        ship_bullet[k].draw = 0;
+
+        alien_bullet[k].x = 0;
+        alien_bullet[k].y = 0;
+        alien_bullet[k].draw = 0;
+    }
+}
+
+void reset_boulders(void)
+{
+    uint8_t k = 0;
+    for (k = 0; k < 4; k++)
+    {
+        boulders[k].x = 0;
+        boulders[k].damage = 0;
+        boulders[k].x = 26+96*k;
+    }
+}
+
 
 int main(void)
 {
+    int16_t i = 0;
+
     uint16_t ship_x = 26;
     uint8_t paused = 1;
 
     int refresh = 0;
 
-
-    typedef struct {
-        int bullet_x;
-        int bullet_y;
-        uint8_t draw;
-    } bullets;
-    bullets bullet_array[NUMBER_OF_BULLETS] = {0,0,0};
-
-    typedef struct {
-        int bullet_x;
-        int bullet_y;
-        uint8_t draw;
-    } bullet;
-    bullet bullet_aliens[NUMBER_OF_BULLETS] = {0,0,1}; // initialize not to draw
-
-    //uint16_t random
-
-    typedef struct {
-        int alien_x;
-        int alien_y;
-        uint8_t explode;
-        uint8_t KilledAnim;
-    } aliens;
-    aliens grid[5][9] = {0,0,0,0};
-
-    typedef struct {
-        int x;
-        uint8_t damage;
-    } boulder;
-    boulder boulders[4] = {0,0};
+    uint8_t alien_row_lookup[] = {ALIEN_A, ALIEN_B, ALIEN_C, ALIEN_B, ALIEN_C};
 
     unsigned char col;
     unsigned char row;
@@ -133,8 +159,7 @@ int main(void)
     unsigned int speed = 0;
     unsigned int bulletnum = 0;
     unsigned char pressA = 0;
-    //unsigned int bulletstart = 0;
-    //unsigned int bulletend = 0;
+
     unsigned int win = 0;
     unsigned int end = 0;
     unsigned int k;
@@ -166,21 +191,10 @@ int main(void)
 
     __end();
 
-    // initialize animation orientation
-    for (col = 0; col < 9; col++)
-    {
-        grid[0][col].KilledAnim &= ANIM;
-        grid[1][col].KilledAnim &= ANIM;
-        grid[2][col].KilledAnim &= ANIM;
-        grid[3][col].KilledAnim |= ANIM;
-        grid[4][col].KilledAnim |= ANIM;
-    }
 
-    // initialize alien bullets as not being drawn
-    for (k = 0; k < NUMBER_OF_BULLETS; k++)
-    {
-        bullet_aliens[k].draw = 1;
-    }
+    reset_aliens();
+    reset_bullets();
+    reset_boulders();
 
 
     while (1) {
@@ -189,25 +203,11 @@ int main(void)
 
         GP_nes_read();
 
-//        if (GP_player_1(NES_START))
-//          {
-//              paused = 0;
-//          }
 
-        if (paused)
-        {
-            if (GP_player_1(NES_START))
-            {
-                paused = 0;
-                GP_putstr(20, 7, "         ");
-            }
 
-            continue;
-        }
-
-    // ********************************************************************
-    //                         DRAWING
-    // ********************************************************************
+        // ********************************************************************
+        //                         DRAWING
+        // ********************************************************************
 
         GP_putstr(1, 1, "HI-SCORE:");
         GP_putnum(11, 1, (high_score / 100) % 10);   // hundred
@@ -222,223 +222,218 @@ int main(void)
         GP_putstr(30, 1, "LIVES:");
 
 
-    // reset the sprite counter to 0
-    __wstartspr(0);
-
-    // ********************************************************************
-    //                      GRID OF ALIENS
-    // ********************************************************************
-
-    if (lives > 0)
-    {
-        draw_ship(310,1);
-    }
-    if (lives > 1)
-    {
-        draw_ship(340,1);
-    }
-    if (lives > 2)
-    {
-        draw_ship(370,1);
-    }
+        // reset the sprite counter to 0
+        __wstartspr(0);
 
 
-    if (paused == 0)
+        //
+        // LIVES
+        //
+
+        if (lives > 0)
         {
+            draw_ship(310,1);
+        }
+        if (lives > 1)
+        {
+            draw_ship(340,1);
+        }
+        if (lives > 2)
+        {
+            draw_ship(370,1);
+        }
+
+        //
+        // alien OF ALIENS
+        //
+
+        for (row = 0; row<5; row++)
+        {
+            for (col = 0; col<9; col++)
+            {
+                if ((alien[row][col].KilledAnim & KILLED) == 0) //if it has not been hit
+                {
+                    draw_alien(alien_row_lookup[row], alien[row][col].x, alien[row][col].y, (alien[row][col].KilledAnim & ANIM));
+                }
+                else if (alien[row][col].explode != 0)
+                {
+                    draw_explosion(alien[row][col].x,alien[row][col].y);
+                    alien[row][col].explode--;
+                }
+            }
+        }
+
+        //
+        // BOULDERS
+        //
+
+        for (i = 0; i < 4; i++)
+        {
+            draw_brick(boulders[i].x, BOULDER_Y, boulders[i].damage);
+        }
+
+        //
+        // SHIP
+        //
+
+        draw_ship(ship_x, SHIP_Y);
+
+        //
+        // SHIP BULLETS
+        //
+
+        for (k = 0; k < NUMBER_OF_BULLETS; k++)
+        {
+            if (ship_bullet[k].draw == 0) continue;
+
+            draw_sprite(ship_bullet[k].x, ship_bullet[k].y,8,0,0);
+        }
+
+        //
+        // ALIEN BULLETS
+        //
+
+        for (k = 0; k < NUMBER_OF_BULLETS; k++)
+        {
+            if (alien_bullet[k].draw == 0) continue;
+
+            draw_sprite(alien_bullet[k].x, alien_bullet[k].y,8,0,0);
+        }
+
+        // hide the rest
+        while (gp_cur_spr < 255) { GP_xhide(); }
+
+        __end();
+
+
+        // ********************************************************************
+        //                       PAUSED
+        // ********************************************************************
+
+        if (paused)
+        {
+            if (GP_player_1(NES_START))
+            {
+                paused = 0;
+                GP_putstr(20, 7, "         ");
+            }
+
+            continue;
+        }
+
+
+        // ********************************************************************
+        //                       ALIEN MOVEMENT
+        // ********************************************************************
 
         refresh++;
         if (refresh % DANCETIME== 0)
         {
-            for (col = 0; col < 9; col++)
-            {
-                grid[0][col].KilledAnim = grid[0][col].KilledAnim ^ 1;
-                grid[1][col].KilledAnim = grid[1][col].KilledAnim ^ 1;
-                grid[2][col].KilledAnim = grid[2][col].KilledAnim ^ 1;
-                grid[3][col].KilledAnim = grid[3][col].KilledAnim ^ 1;
-                grid[4][col].KilledAnim = grid[4][col].KilledAnim ^ 1;
-            }
-
+            for (row = 0; row < 5; row++)
+                for (col = 0; col < 9; col++)
+                    alien[row][col].KilledAnim ^= 1;
         }
 
-        for (col = 0; col<9; col++)         // top row
+        for (row = 0; row<5; row++)
         {
-            grid[0][col].alien_x = col*32 + mvt;
-            grid[0][col].alien_y = 20 + 32*0 + down*16;
-            if ((grid[0][col].KilledAnim & KILLED) == 0) //if it has not been hit
+            for (col = 0; col<9; col++)
             {
-                draw_alien(ALIEN_A, grid[0][col].alien_x, grid[0][col].alien_y, (grid[0][col].KilledAnim & ANIM));
-            }
-            else if (grid[0][col].explode != 0)
-            {
-                draw_explosion(grid[0][col].alien_x,grid[0][col].alien_y);
-                grid[0][col].explode--;
-            }
-        }
-        for (col = 0; col<9; col++)
-        {
-            grid[1][col].alien_x = col*32 + mvt;
-            grid[1][col].alien_y = 20 + 32*1 + down*16;
-            if ((grid[1][col].KilledAnim & KILLED) == 0)
-            {
-                draw_alien(ALIEN_B, grid[1][col].alien_x, grid[1][col].alien_y, (grid[1][col].KilledAnim & ANIM));
-            }
-            else if (grid[1][col].explode != 0)
-            {
-                draw_explosion(grid[1][col].alien_x,grid[1][col].alien_y);
-                grid[1][col].explode--;
-            }
-        }
-        for (col = 0; col<9; col++)
-        {
-            grid[2][col].alien_x = col*32 + mvt;
-            grid[2][col].alien_y = 20 + 32*2 + down*16;
-            if ((grid[2][col].KilledAnim & KILLED) == 0)
-            {
-                draw_alien(ALIEN_C, grid[2][col].alien_x, grid[2][col].alien_y, grid[2][col].KilledAnim & ANIM);
-            }
-            else if (grid[2][col].explode != 0)
-            {
-                draw_explosion(grid[2][col].alien_x,grid[2][col].alien_y);
-                grid[2][col].explode--;
-            }
-        }
-        for (col = 0; col<9; col++)
-        {
-            grid[3][col].alien_x = col*32 + mvt;
-            grid[3][col].alien_y = 20 + 32*3 + down*16;
-            if ((grid[3][col].KilledAnim & KILLED) == 0)
-            {
-                draw_alien(ALIEN_B, grid[3][col].alien_x, grid[3][col].alien_y, (grid[3][col].KilledAnim & ANIM));
-            }
-            else if (grid[3][col].explode != 0)
-            {
-                draw_explosion(grid[3][col].alien_x,grid[3][col].alien_y);
-                grid[3][col].explode--;
-            }
-        }
-        for (col = 0; col<9; col++)
-        {
-            grid[4][col].alien_x = col*32 + mvt;
-            grid[4][col].alien_y = 20 + 32*4 + down*16;
-            if ((grid[4][col].KilledAnim & KILLED) == 0)
-            {
-                draw_alien(ALIEN_C, grid[4][col].alien_x, grid[4][col].alien_y, (grid[4][col].KilledAnim & ANIM));
-            }
-            else if (grid[4][col].explode != 0)
-            {
-                draw_explosion(grid[4][col].alien_x,grid[4][col].alien_y);
-                grid[4][col].explode--;
+                alien[row][col].x = col*32 + mvt;
+                alien[row][col].y = 20 + 32*row + down*16;
             }
         }
 
-    speed++;
+        speed++;
 
-    if (toRight == 1 && speed%2 == 0)
-    {
-        mvt++;
-        if (mvt == 110)
-        {
-            mvt--;
-            toRight = 0;
-            //down++;
-        }
-    }
-
-    if (toRight == 0 && speed%2 == 0)
-    {
-        mvt--;
-        if (mvt == 0)
+        if (toRight == 1 && speed%2 == 0)
         {
             mvt++;
-            toRight = 1;
-            down++;
-        }
-    }
-
-    }
-
-
-
-    // ********************************************************************
-    //                      BOULDERS AND SHIP
-    // ********************************************************************
-
-    int i;
-    for (i = 0; i < 4; i++)
-    {
-        boulders[i].x = 26+96*i;
-        draw_brick(boulders[i].x, BOULDER_Y, boulders[i].damage);
-    }
-
-    draw_ship(ship_x, SHIP_Y);
-
-
-
-
-    // ********************************************************************
-    //                         BULLETS
-    // ********************************************************************
-    //draw all bullets and move them up
-
-            for (k = 0; k < NUMBER_OF_BULLETS; k++)
+            if (mvt == 110)
             {
-                if (bullet_array[k].draw == 0) //draw
+                mvt--;
+                toRight = 0;
+            }
+        }
+
+        if (toRight == 0 && speed%2 == 0)
+        {
+            mvt--;
+            if (mvt == 0)
+            {
+                mvt++;
+                toRight = 1;
+                down++;
+            }
+        }
+
+
+        // ********************************************************************
+        //                      SHIP BULLET MOVEMENT
+        // ********************************************************************
+
+        for (k = 0; k < NUMBER_OF_BULLETS; k++)
+        {
+            if (ship_bullet[k].draw == 0) continue;
+
+            ship_bullet[k].y -= BULLET_SPEED;
+
+            //
+            // BOULDERS
+            //
+            for (col = 0; col < 4; col++)
+            {
+                // if boulder is already fully damaged skip it
+                if (boulders[col].damage == 5) continue;
+
+                // if the bullet is within x y bounds of bounder
+                if (ship_bullet[k].x + 5 + 6 > boulders[col].x &&
+                    ship_bullet[k].x + 5 + 0 < boulders[col].x + BOULDER_WIDTH &&
+                    ship_bullet[k].y + 4 <= BOULDER_Y + BOULDER_HEIGHT)
                 {
-                    draw_sprite(bullet_array[k].bullet_x, bullet_array[k].bullet_y,8,0,0);
-                    bullet_array[k].bullet_y -= BULLET_SPEED;
-                    for (col = 0; col < 4; col++)
-                    {
-                        if (bullet_array[k].bullet_x > boulders[col].x && bullet_array[k].bullet_x < boulders[col].x + BOULDER_WIDTH && boulders[col].damage < 5)
-                        {
-                            if (bullet_array[k].bullet_y <= BOULDER_Y + BOULDER_HEIGHT)
-                            {
-                                if (boulders[col].damage < 5)
-                                {
-                                    boulders[col].damage++;
-                                    bullet_array[k].draw = 1; //don't draw anymore
-                                }
-                            }
-                        }
-                    }
+                    boulders[col].damage++;
+                    ship_bullet[k].draw = 0; //don't draw anymore
+                }
+            }
 
-                    // if the bullet reaches the top of the screen
-                    if (bullet_array[k].bullet_y < 2) //maybe 0
-                    {
-                        bullet_array[k].draw = 1; //don't draw anymore
-                    }
+            //
+            // TOP OF SCREEN
+            //
+            if (ship_bullet[k].y < 2) //maybe 0
+            {
+                ship_bullet[k].draw = 0; //don't draw anymore
+            }
 
-                    //if hit alien, remove both from drawing:
-                    //for each column. case statement using bullet_x
-                    for (col = 0; col<9; col++)
+            //
+            // ALIENS
+            //
+            for (col = 0; col<9; col++)
+            {
+                for (row = 0; row < 5; row++)
+                {
+                    // if alien isn't alive, skip
+                    if(alien[row][col].KilledAnim & KILLED) continue;
+
+                    // if bullet already hit something, skip
+                    if (ship_bullet[k].draw == 0) continue;
+
+                    // if bullet is within x y bounds of alien
+                    if (ship_bullet[k].x + 5 + 6 > alien[row][col].x + 4 &&        // right side of bullet with left size of alien
+                        ship_bullet[k].x + 5 + 0 < alien[row][col].x + 32 - 4  &&  // left side of bullet with right side of alien
+                        ship_bullet[k].y + 4 <= alien[row][col].y + 16)
                     {
-                        //for each row
-                        for (row = 0; row < 5; row++)
-                        {
-                            //if bullet is within x bounds
-                            if (bullet_array[k].bullet_x > grid[row][col].alien_x && bullet_array[k].bullet_x < grid[row][col].alien_x + 14)
-                            {
-                                //if it is also at the y coordinate
-                                if (bullet_array[k].bullet_y <= grid[row][col].alien_y)
-                                {
-                                    //remove the alien
-                                    if ((grid[row][col].KilledAnim & KILLED) == 0 && bullet_array[k].draw == 0) //if still alive and bullet exists... kill!
-                                    {
-                                        grid[row][col].KilledAnim |= KILLED;
-                                        grid[row][col].explode = EXPLOSION_DURATION;
-                                        bullet_array[k].draw = 1; //don't draw anymore
-                                        score += 10;
-                                    }
-                                }
-                            }
-                        }
+                        alien[row][col].KilledAnim |= KILLED;
+                        alien[row][col].explode = EXPLOSION_DURATION;
+                        ship_bullet[k].draw = 0; //don't draw anymore
+                        score += 10;
                     }
                 }
             }
 
+        }
 
 
         // ********************************************************************
-        //                        ALIEN BULLETS
+        //                      ALIEN BULLETS MOVEMENT
         // ********************************************************************
         breakflag = 0;
         if (refresh % TIMEALIENSHOOT == 0) //make time random maybe
@@ -446,15 +441,15 @@ int main(void)
             ShootColumn = random(0,8);  //pick a random alien column
             for (i = 4; i >= 0; i--) //find the lowest alien that is still alive
             {
-                if ((grid[i][ShootColumn].KilledAnim & KILLED) == 0)  //if it is still alive
+                if ((alien[i][ShootColumn].KilledAnim & KILLED) == 0)  //if it is still alive
                 {
                     for (bulletnum = 0; bulletnum < NUMBER_OF_BULLETS; bulletnum++)
                     {
-                        if (bullet_aliens[bulletnum].draw == 1) //not being drawn
+                        if (alien_bullet[bulletnum].draw == 0) //not being drawn
                         {
-                            bullet_aliens[bulletnum].bullet_x = grid[i][ShootColumn].alien_x + 8;  //probably need to fix offsets here
-                            bullet_aliens[bulletnum].bullet_y = grid[i][ShootColumn].alien_y + 16;
-                            bullet_aliens[bulletnum].draw = 0;  //draw the bullet
+                            alien_bullet[bulletnum].x = alien[i][ShootColumn].x + 8;  //probably need to fix offsets here
+                            alien_bullet[bulletnum].y = alien[i][ShootColumn].y + 16;
+                            alien_bullet[bulletnum].draw = 1;  //draw the bullet
                             breakflag = 1;
                             break;
                         }
@@ -464,193 +459,151 @@ int main(void)
             }
         }
 
-        //draw all bullets and move them up
-
-                    for (k = 0; k < NUMBER_OF_BULLETS; k++)
-                    {
-                        if (bullet_aliens[k].draw == 0) //draw
-                        {
-                            draw_sprite(bullet_aliens[k].bullet_x, bullet_aliens[k].bullet_y,8,0,0);
-                            bullet_aliens[k].bullet_y += ALIEN_BULLET_SPEED;
-                            for (col = 0; col < 4; col++)
-                            {
-                                if (bullet_aliens[k].bullet_x > boulders[col].x && bullet_aliens[k].bullet_x < boulders[col].x + BOULDER_WIDTH && boulders[col].damage < 5)
-                                {
-                                    if (bullet_aliens[k].bullet_y + 16 >= BOULDER_Y)
-                                    {
-                                        if (boulders[col].damage < 5)
-                                        {
-                                            boulders[col].damage++;
-                                            bullet_aliens[k].draw = 1; //don't draw anymore
-                                        }
-                                    }
-                                }
-                            }
-
-                            // if the bullet reaches the bottom of the screen
-                            if (bullet_aliens[k].bullet_y > 280)
-                            {
-                                bullet_aliens[k].draw = 1; //don't draw anymore
-                            }
-
-                            // if the bullet hits a boulder or kills the guy, do stuff
-                            if ((bullet_aliens[k].bullet_x > ship_x - 16) && (bullet_aliens[k].bullet_x < ship_x + 16))
-                            {
-                                if (bullet_aliens[k].bullet_y + 16 > SHIP_Y)
-                                {
-                                    lives--;
-                                    bullet_aliens[k].draw = 1; //don't draw anymore
-                                }
-                            }
-
-                        }
-
-                    }
-
-
-
-
-
-
-    // hide the rest
-    while (gp_cur_spr < 255) { GP_xhide(); }
-
-    __end();
-
-
-
-    // ********************************************************************
-    //                           SHIP
-    // ********************************************************************
-
-    if (GP_player_1(NES_LEFT)) ship_x -= SHIP_SPEED;
-    if (GP_player_1(NES_RIGHT)) ship_x += SHIP_SPEED;
-
-    if (ship_x >= 380) ship_x = 380;
-    if (ship_x <= 16) ship_x = 16;
-
-
-    // ********************************************************************
-    //                          NEW BULLETS
-    // ********************************************************************
-
-    if (GP_player_1(NES_A))
-    {
-        pressA = 1;
-    }
-
-    if (pressA == 1 && !(GP_player_1(NES_A))) // the player released the button
-    {
-        pressA = 0;
-        for (bulletnum = 0; bulletnum < NUMBER_OF_BULLETS; bulletnum++)
-        {
-            if (bullet_array[bulletnum].draw == 1) //not being drawn
-                    {
-                        bullet_array[bulletnum].bullet_x = ship_x-8;
-                        bullet_array[bulletnum].bullet_y = SHIP_Y-16;
-                        bullet_array[bulletnum].draw = 0;
-                        bulletnum++;
-                        //bulletend++;
-                        break;
-                    }
-        }
-
-
-    }
-
-    // ********************************************************************
-    //                          GAME OVER
-    // ********************************************************************
-
-    for (col = 0; col<9; col++)
-    {
-        for (row = 0; row < 5; row++)
-        {
-            if ((grid[row][col].alien_y + 16 > BOULDER_Y && (grid[row][col].KilledAnim & KILLED) == 0) || lives == 0)
-            {
-                //paused = 1;
-                GP_putstr(20, 7, "GAME OVER");
-                end = 1;
-            }
-        }
-    }
-
-    // ********************************************************************
-    //                          VICTORY
-    // ********************************************************************
-    win = 0;
-    for (col = 0; col<9; col++)
-    {
-        for (row = 0; row < 5; row++)
-        {
-            win = win + (grid[row][col].KilledAnim & KILLED);  //wrong
-        }
-    }
-    if (win == 90)
-    {
-        //paused = 1;
-        GP_putstr(20, 7, "YOU WIN!");
-        end = 1;
-    }
-
-    // ********************************************************************
-    //                          RESTART
-    // ********************************************************************
-
-    if (end == 1)
-    {
-        paused = 1;
-
-        if (score > high_score)
-        {
-            high_score = score;
-        }
-
-        for (row = 0; row < 5; row ++)
-        {
-            for (col = 0; col < 9; col++)
-            {
-                grid[row][col].alien_x = 0;
-                grid[row][col].alien_y = 0;
-                grid[row][col].explode = 0;
-                grid[row][col].KilledAnim = 0;
-                grid[3][col].KilledAnim |= ANIM;
-                grid[4][col].KilledAnim |= ANIM;
-            }
-        }
-//      for (col = 0; col < 9; col++)
-//      {
-//          grid[3][col].KilledAnim |= ANIM;
-//          grid[4][col].KilledAnim |= ANIM;
-//      }
-
         for (k = 0; k < NUMBER_OF_BULLETS; k++)
         {
-            bullet_array[k].bullet_x = 0;
-            bullet_array[k].bullet_y = 0;
-            bullet_array[k].draw = 0;
+            if (alien_bullet[k].draw == 0) continue;
+
+            alien_bullet[k].y += ALIEN_BULLET_SPEED;
+
+            //
+            // BOULDERS
+            //
+
+            for (col = 0; col < 4; col++)
+            {
+                // if boulder is already fully damaged skip it
+                if (boulders[col].damage == 5) continue;
+
+                // if the bullet is within x y bounds of bounder
+                if (alien_bullet[k].x + 5 + 6 > boulders[col].x &&                   // bullet is to the right of the boulder
+                    alien_bullet[k].x + 5 + 0 < boulders[col].x + BOULDER_WIDTH &&   // bullet is to the left of the boulder
+                    alien_bullet[k].y + 16 >= BOULDER_Y)                             // bullet is  inside boulder from the top
+                {
+                    boulders[col].damage++;     // increase boulder damage
+                    alien_bullet[k].draw = 0;   // dont draw bullet anymore since it just his the boulder
+                }
+            }
+
+            //
+            // BOTOM OF SCREEN
+            //
+            if (alien_bullet[k].y > 280)
+            {
+                alien_bullet[k].draw = 0; //don't draw anymore
+            }
+
+            //
+            // SHIP
+            //
+            if ((alien_bullet[k].x + 5 + 6 > ship_x - 16 + 2) && 
+                (alien_bullet[k].x + 5 + 0 < ship_x + 16 - 2) &&
+                (alien_bullet[k].y + 16 > SHIP_Y))
+            {
+                lives--;
+                alien_bullet[k].draw = 0; //don't draw anymore
+            }
         }
-        for (k = 0; k < NUMBER_OF_BULLETS; k++)
-        {
-            bullet_aliens[k].bullet_x = 0;
-            bullet_aliens[k].bullet_y = 0;
-            bullet_aliens[k].draw = 1;
-        }
-        for (k = 0; k < 4; k++)
-        {
-            boulders[k].x = 0;
-            boulders[k].damage = 0;
-        }
-        refresh = 0;
-        down = 0;
-        toRight = 1;
-        mvt = 0;
-        end = 0;
-        score = 0;
-        lives = 3;
 
 
-    }
+
+
+        // ********************************************************************
+        //                        SHIP MOVEMENT
+        // ********************************************************************
+
+        if (GP_player_1(NES_LEFT)) ship_x -= SHIP_SPEED;
+        if (GP_player_1(NES_RIGHT)) ship_x += SHIP_SPEED;
+
+        if (ship_x >= 380) ship_x = 380;
+        if (ship_x <= 16) ship_x = 16;
+
+
+        // ********************************************************************
+        //                          NEW BULLETS
+        // ********************************************************************
+
+        if (GP_player_1(NES_A))
+        {
+            pressA = 1;
+        }
+
+        if (pressA == 1 && !(GP_player_1(NES_A))) // the player released the button
+        {
+            pressA = 0;
+            for (bulletnum = 0; bulletnum < NUMBER_OF_BULLETS; bulletnum++)
+            {
+                if (ship_bullet[bulletnum].draw == 0) //not being drawn
+                {
+                    ship_bullet[bulletnum].x = ship_x-8;
+                    ship_bullet[bulletnum].y = SHIP_Y-16;
+                    ship_bullet[bulletnum].draw = 1;
+                    break;
+                }
+            }
+        }
+
+        // ********************************************************************
+        //                          GAME OVER
+        // ********************************************************************
+
+        for (col = 0; col<9; col++)
+        {
+            for (row = 0; row < 5; row++)
+            {
+                if ((alien[row][col].y + 16 > BOULDER_Y && (alien[row][col].KilledAnim & KILLED) == 0) || lives == 0)
+                {
+                    //paused = 1;
+                    GP_putstr(20, 7, "GAME OVER");
+                    end = 1;
+                }
+            }
+        }
+
+        // ********************************************************************
+        //                          VICTORY
+        // ********************************************************************
+        win = 0;
+        for (col = 0; col<9; col++)
+        {
+            for (row = 0; row < 5; row++)
+            {
+                win = win + (alien[row][col].KilledAnim & KILLED);  //wrong
+            }
+        }
+        if (win == 90)
+        {
+            //paused = 1;
+            GP_putstr(20, 7, "YOU WIN!");
+            end = 1;
+        }
+
+        // ********************************************************************
+        //                          RESTART
+        // ********************************************************************
+
+        if (end == 1)
+        {
+            paused = 1;
+
+            if (score > high_score)
+            {
+                high_score = score;
+            }
+
+            reset_aliens();
+
+            reset_bullets();
+
+            reset_boulders();
+
+            refresh = 0;
+            down = 0;
+            toRight = 1;
+            mvt = 0;
+            end = 0;
+            score = 0;
+            lives = 3;
+        }
 
     }
 

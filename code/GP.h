@@ -32,8 +32,8 @@ extern uint8_t gp_cur_spr;    // current sprite, incremented by xsprite/xhide
 
 #define NES_CLK_PIN     GPIO_1_PIN
 #define NES_LATCH_PIN   GPIO_2_PIN
-#define NES_DATA_1_PIN  GPIO_3_PIN
-#define NES_DATA_2_PIN  GPIO_4_PIN
+#define NES_DATA_2_PIN  GPIO_3_PIN
+#define NES_DATA_1_PIN  GPIO_4_PIN
 
 #define P_NES_IN        P_GPIO_IN
 #define P_NES_OUT       P_GPIO_OUT
