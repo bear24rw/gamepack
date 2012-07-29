@@ -4,8 +4,8 @@
 
 #include "header.h"
 
-#define BULLET_SPRITE   8
-#define BULLET_SPEED    5
+#define BULLET_SPRITE       8
+#define BULLET_SPEED        5
 #define ALIEN_BULLET_SPEED  2
 #define NUMBER_OF_BULLETS   5
 #define EXPLOSION_DURATION  20
@@ -20,11 +20,11 @@
 #define DANCETIME       30
 #define TIMEALIENSHOOT  75
 
-#define SHIP_Y        32*8+16 + 8 // pixel location of top of ship
-#define SHIP_SPEED    5       // pixels per gameloop
+#define SHIP_Y      32*8+16 + 8 // pixel location of top of ship
+#define SHIP_SPEED  5       // pixels per gameloop
 
-#define KILLED      BIT1
-#define ANIM        BIT0
+#define KILLED  BIT1
+#define ANIM    BIT0
 
 struct {
     int x;
