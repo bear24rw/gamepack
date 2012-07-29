@@ -26,6 +26,27 @@
 #define KILLED      BIT1
 #define ANIM        BIT0
 
+struct {
+    int x;
+    uint8_t damage;
+} boulders[4];
+
+struct {
+    int alien_x;
+    int alien_y;
+    uint8_t explode;
+    uint8_t KilledAnim;
+} grid[5][9];
+
+typedef struct {
+    int bullet_x;
+    int bullet_y;
+    uint8_t draw;
+} bullet;
+bullet bullet_array[NUMBER_OF_BULLETS];
+bullet bullet_aliens[NUMBER_OF_BULLETS];
+
+
 // x y values are top left of alien
 void draw_alien(uint8_t alien, uint16_t x, uint16_t y, uint8_t anim)
 {
@@ -73,6 +94,50 @@ void draw_explosion(uint16_t x, uint16_t y)
     draw_sprite(x+16, y, 11, 0, 0);
 }
 
+void reset_aliens(void)
+{
+    uint8_t row = 0;
+    uint8_t col = 0;
+    for (row = 0; row < 5; row ++)
+    {
+        for (col = 0; col < 9; col++)
+        {
+            grid[row][col].alien_x = col*32;
+            grid[row][col].alien_y = 20 + 32*row;
+            grid[row][col].explode = 0;
+            grid[row][col].KilledAnim = 0;
+            grid[3][col].KilledAnim |= ANIM;
+            grid[4][col].KilledAnim |= ANIM;
+        }
+    }
+}
+
+void reset_bullets(void)
+{
+    uint8_t k = 0;
+    for (k = 0; k < NUMBER_OF_BULLETS; k++)
+    {
+        bullet_array[k].bullet_x = 0;
+        bullet_array[k].bullet_y = 0;
+        bullet_array[k].draw = 0;
+
+        bullet_aliens[k].bullet_x = 0;
+        bullet_aliens[k].bullet_y = 0;
+        bullet_aliens[k].draw = 0;
+    }
+}
+
+void reset_boulders(void)
+{
+    uint8_t k = 0;
+    for (k = 0; k < 4; k++)
+    {
+        boulders[k].x = 0;
+        boulders[k].damage = 0;
+        boulders[k].x = 26+96*k;
+    }
+}
+
 
 int main(void)
 {
@@ -84,35 +149,11 @@ int main(void)
     int refresh = 0;
 
 
-    typedef struct {
-        int bullet_x;
-        int bullet_y;
-        uint8_t draw;
-    } bullets;
-    bullets bullet_array[NUMBER_OF_BULLETS] = {0,0,0};
 
-    typedef struct {
-        int bullet_x;
-        int bullet_y;
-        uint8_t draw;
-    } bullet;
-    bullet bullet_aliens[NUMBER_OF_BULLETS] = {0,0,1}; // initialize not to draw
 
     //uint16_t random
 
-    typedef struct {
-        int alien_x;
-        int alien_y;
-        uint8_t explode;
-        uint8_t KilledAnim;
-    } aliens;
-    aliens grid[5][9] = {0,0,0,0};
 
-    typedef struct {
-        int x;
-        uint8_t damage;
-    } boulder;
-    boulder boulders[4] = {0,0};
 
     uint8_t alien_row_lookup[] = {ALIEN_A, ALIEN_B, ALIEN_C, ALIEN_B, ALIEN_C};
 
@@ -157,37 +198,10 @@ int main(void)
 
     __end();
 
-    // initialize animation orientation
-    for (col = 0; col < 9; col++)
-    {
-        grid[0][col].KilledAnim &= ANIM;
-        grid[1][col].KilledAnim &= ANIM;
-        grid[2][col].KilledAnim &= ANIM;
-        grid[3][col].KilledAnim |= ANIM;
-        grid[4][col].KilledAnim |= ANIM;
-    }
 
-    // initialize alien bullets as not being drawn
-    for (k = 0; k < NUMBER_OF_BULLETS; k++)
-    {
-        bullet_aliens[k].draw = 0;
-    }
-
-    // intialize boulder position
-    for (i = 0; i < 4; i++)
-    {
-        boulders[i].x = 26+96*i;
-    }
-
-    // intialize alien positions
-    for (row = 0; row<5; row++)
-    {
-        for (col = 0; col<9; col++)
-        {
-            grid[row][col].alien_x = col*32 + mvt;
-            grid[row][col].alien_y = 20 + 32*row + down*16;
-        }
-    }
+    reset_aliens();
+    reset_bullets();
+    reset_boulders();
 
 
     while (1) {
@@ -584,41 +598,12 @@ int main(void)
                 high_score = score;
             }
 
-            for (row = 0; row < 5; row ++)
-            {
-                for (col = 0; col < 9; col++)
-                {
-                    grid[row][col].alien_x = 0;
-                    grid[row][col].alien_y = 0;
-                    grid[row][col].explode = 0;
-                    grid[row][col].KilledAnim = 0;
-                    grid[3][col].KilledAnim |= ANIM;
-                    grid[4][col].KilledAnim |= ANIM;
-                }
-            }
-            //      for (col = 0; col < 9; col++)
-            //      {
-            //          grid[3][col].KilledAnim |= ANIM;
-            //          grid[4][col].KilledAnim |= ANIM;
-            //      }
+            reset_aliens();
 
-            for (k = 0; k < NUMBER_OF_BULLETS; k++)
-            {
-                bullet_array[k].bullet_x = 0;
-                bullet_array[k].bullet_y = 0;
-                bullet_array[k].draw = 1;
-            }
-            for (k = 0; k < NUMBER_OF_BULLETS; k++)
-            {
-                bullet_aliens[k].bullet_x = 0;
-                bullet_aliens[k].bullet_y = 0;
-                bullet_aliens[k].draw = 0;
-            }
-            for (k = 0; k < 4; k++)
-            {
-                boulders[k].x = 0;
-                boulders[k].damage = 0;
-            }
+            reset_bullets();
+
+            reset_boulders();
+
             refresh = 0;
             down = 0;
             toRight = 1;
@@ -626,8 +611,6 @@ int main(void)
             end = 0;
             score = 0;
             lives = 3;
-
-
         }
 
     }
