@@ -125,6 +125,8 @@ int main(void)
     } boulder;
     boulder boulders[4] = {0,0};
 
+    uint8_t alien_row_lookup[] = {ALIEN_A, ALIEN_B, ALIEN_C, ALIEN_B, ALIEN_C};
+
     unsigned char col;
     unsigned char row;
     unsigned char toRight = 1;
@@ -260,74 +262,21 @@ int main(void)
 
             }
 
-            for (col = 0; col<9; col++)         // top row
+            for (row = 0; row<5; row++)
             {
-                grid[0][col].alien_x = col*32 + mvt;
-                grid[0][col].alien_y = 20 + 32*0 + down*16;
-                if ((grid[0][col].KilledAnim & KILLED) == 0) //if it has not been hit
+                for (col = 0; col<9; col++)
                 {
-                    draw_alien(ALIEN_A, grid[0][col].alien_x, grid[0][col].alien_y, (grid[0][col].KilledAnim & ANIM));
-                }
-                else if (grid[0][col].explode != 0)
-                {
-                    draw_explosion(grid[0][col].alien_x,grid[0][col].alien_y);
-                    grid[0][col].explode--;
-                }
-            }
-            for (col = 0; col<9; col++)
-            {
-                grid[1][col].alien_x = col*32 + mvt;
-                grid[1][col].alien_y = 20 + 32*1 + down*16;
-                if ((grid[1][col].KilledAnim & KILLED) == 0)
-                {
-                    draw_alien(ALIEN_B, grid[1][col].alien_x, grid[1][col].alien_y, (grid[1][col].KilledAnim & ANIM));
-                }
-                else if (grid[1][col].explode != 0)
-                {
-                    draw_explosion(grid[1][col].alien_x,grid[1][col].alien_y);
-                    grid[1][col].explode--;
-                }
-            }
-            for (col = 0; col<9; col++)
-            {
-                grid[2][col].alien_x = col*32 + mvt;
-                grid[2][col].alien_y = 20 + 32*2 + down*16;
-                if ((grid[2][col].KilledAnim & KILLED) == 0)
-                {
-                    draw_alien(ALIEN_C, grid[2][col].alien_x, grid[2][col].alien_y, grid[2][col].KilledAnim & ANIM);
-                }
-                else if (grid[2][col].explode != 0)
-                {
-                    draw_explosion(grid[2][col].alien_x,grid[2][col].alien_y);
-                    grid[2][col].explode--;
-                }
-            }
-            for (col = 0; col<9; col++)
-            {
-                grid[3][col].alien_x = col*32 + mvt;
-                grid[3][col].alien_y = 20 + 32*3 + down*16;
-                if ((grid[3][col].KilledAnim & KILLED) == 0)
-                {
-                    draw_alien(ALIEN_B, grid[3][col].alien_x, grid[3][col].alien_y, (grid[3][col].KilledAnim & ANIM));
-                }
-                else if (grid[3][col].explode != 0)
-                {
-                    draw_explosion(grid[3][col].alien_x,grid[3][col].alien_y);
-                    grid[3][col].explode--;
-                }
-            }
-            for (col = 0; col<9; col++)
-            {
-                grid[4][col].alien_x = col*32 + mvt;
-                grid[4][col].alien_y = 20 + 32*4 + down*16;
-                if ((grid[4][col].KilledAnim & KILLED) == 0)
-                {
-                    draw_alien(ALIEN_C, grid[4][col].alien_x, grid[4][col].alien_y, (grid[4][col].KilledAnim & ANIM));
-                }
-                else if (grid[4][col].explode != 0)
-                {
-                    draw_explosion(grid[4][col].alien_x,grid[4][col].alien_y);
-                    grid[4][col].explode--;
+                    grid[row][col].alien_x = col*32 + mvt;
+                    grid[row][col].alien_y = 20 + 32*row + down*16;
+                    if ((grid[row][col].KilledAnim & KILLED) == 0) //if it has not been hit
+                    {
+                        draw_alien(alien_row_lookup[row], grid[row][col].alien_x, grid[row][col].alien_y, (grid[row][col].KilledAnim & ANIM));
+                    }
+                    else if (grid[row][col].explode != 0)
+                    {
+                        draw_explosion(grid[row][col].alien_x,grid[row][col].alien_y);
+                        grid[row][col].explode--;
+                    }
                 }
             }
 
