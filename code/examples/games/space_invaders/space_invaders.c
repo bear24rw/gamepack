@@ -475,13 +475,13 @@ int main(void)
 
             for (col = 0; col < 4; col++)
             {
-                if (alien_bullet[k].bullet_x > boulders[col].x &&                      // bullet is to the right of the boulder
-                        alien_bullet[k].bullet_x < boulders[col].x + BOULDER_WIDTH &&  // bullet is to the left of the boulder
-                        alien_bullet[k].bullet_y + 16 >= BOULDER_Y &&                  // bullet is  inside boulder from the top
-                        boulders[col].damage < 5)                                       // can the boulder take more damage?
+                if (alien_bullet[k].bullet_x > boulders[col].x &&                   // bullet is to the right of the boulder
+                    alien_bullet[k].bullet_x < boulders[col].x + BOULDER_WIDTH &&   // bullet is to the left of the boulder
+                    alien_bullet[k].bullet_y + 16 >= BOULDER_Y &&                   // bullet is  inside boulder from the top
+                    boulders[col].damage < 5)                                       // can the boulder take more damage?
                 {
-                    boulders[col].damage++;         // increase boulder damage
-                    alien_bullet[k].draw = 0;      // dont draw bullet anymore since it just his the boulder
+                    boulders[col].damage++;     // increase boulder damage
+                    alien_bullet[k].draw = 0;   // dont draw bullet anymore since it just his the boulder
                 }
             }
 
@@ -493,8 +493,8 @@ int main(void)
 
             // if the bullet hits a boulder or kills the guy, do stuff
             if ((alien_bullet[k].bullet_x > ship_x - 16) && 
-                    (alien_bullet[k].bullet_x < ship_x + 16) &&
-                    (alien_bullet[k].bullet_y + 16 > SHIP_Y))
+                (alien_bullet[k].bullet_x < ship_x + 16) &&
+                (alien_bullet[k].bullet_y + 16 > SHIP_Y))
             {
                 lives--;
                 alien_bullet[k].draw = 0; //don't draw anymore
