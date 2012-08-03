@@ -241,7 +241,7 @@ int main(void)
         {
             if (last_select == 0)
             {
-                GP_screenshot(1);
+                //GP_screenshot(1);
                 last_select = 1;
             }
         }
