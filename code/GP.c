@@ -21,7 +21,8 @@ void GP_begin(void)
     P_FPGA_CS_DIR &= ~FPGA_CS_PIN;
 
     // let the fpga initialize
-    delay(250);
+    uint16_t i = 0xFF;
+    while (--i) { delay(0xFF); }
 
     // we can now drive FPGA_CS
     P_FPGA_CS_DIR |= FPGA_CS_PIN;
@@ -68,7 +69,6 @@ void GP_begin(void)
 
     GP_wr(J1_RESET, 1);           // HALT coprocessor
     __wstart(RAM_SPR);            // Hide all sprites
-    uint16_t i = 0;
     for (i = 0; i < 512; i++)
         GP_xhide();
     __end();
@@ -89,6 +89,14 @@ void GP_begin(void)
     GP_wr16(SAMPLE_R, 0);
     GP_wr16(SCREENSHOT_Y, 0);
     GP_wr(MODULATOR, 64);
+
+    // ensure the fpga has booted up
+    GP_waitvblank();
+
+    uint16_t j;
+    for (i = 0; i < 0x50; i++)
+        for (j = 0; j < 0xFF; j++)
+            delay(0xFF);
 
 }
 
