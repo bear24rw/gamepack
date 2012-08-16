@@ -4,6 +4,9 @@
 
 #include "header.h"
 
+// uncomment to enable demo mode, the game will play itself
+//#define DEMO_MODE
+
 #define GRID_X          16      // pixel offset
 #define GRID_Y          16      // pixel offset
 #define GRID_WIDTH      9       // number of bricks
@@ -88,7 +91,7 @@ int main(void)
         // ********************************************************************
         //                         DRAWING
         // ********************************************************************
-      
+
         GP_putstr(41, 1, "HI-SCORE");
         GP_putnum(41, 2, (high_score / 10000) % 10); // ten-thousand
         GP_putnum(42, 2, (high_score / 1000) % 10);  // thousand
@@ -115,7 +118,7 @@ int main(void)
         GP_putnum(41, 17, abs(ball_x_v));
         GP_putnum(41, 18, abs(ball_y_v));
 
-        
+        __wstartspr(0);
 
         //
         // NUMBER OF LIVES
@@ -249,6 +252,8 @@ int main(void)
         //                          PAUSE
         // ********************************************************************
 
+#ifndef DEMO_MODE
+
         if (paused)
         {
             if (GP_player_1(NES_START))
@@ -281,8 +286,14 @@ int main(void)
         if (GP_player_1(NES_LEFT)) paddle_x -= PADDLE_SPEED;
         if (GP_player_1(NES_RIGHT)) paddle_x += PADDLE_SPEED;
 
+#else
+        // in demo mode paddle tracks the ball
+        paddle_x = ball_x;
+#endif
+
         if (paddle_x >= GRID_WIDTH*32 - 16 - 8) paddle_x = GRID_WIDTH*32 - 16 - 8;
         if (paddle_x <= 0 + 16 + 8) paddle_x = 0 + 16 + 8;
+
 
 
         // ********************************************************************

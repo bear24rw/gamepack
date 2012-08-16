@@ -231,10 +231,15 @@ def encode(im):
             iglyph = getch(im, x, y)
             glyph = iglyph.tostring()
             if not glyph in charset:
-                if len(charset) == 256:
-                    raise OverflowError
                 charset[glyph] = len(charset)
             picture.append(charset[glyph])
+
+    print "Used chars: %s/256" % len(charset)
+
+    if len(charset) > 255:
+        print "Too many chars"
+        raise OverflowError
+
     picd = array('B', picture)
     cd = array('B', [0] * 16 * len(charset))
     pd = array('H', [0] * 4 * len(charset))
