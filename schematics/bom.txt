@@ -1,3 +1,10 @@
+V1.1 BOM
+--------
+https://docs.google.com/spreadsheet/ccc?key=0Ageqs0usQsoRdG42UmZYR0RWSEtKMnlBU2pBVXRnZ1E&usp=sharing
+
+V1.0 BOM
+--------
+
 // headers
 JP3          | CONN HEADER 6POS .100 STR TIN    | 609-3306-ND         | $0.24
 JP5          | CONN HEADER 6POS .100 STR TIN    | 609-3306-ND         | $0.24
